@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Index from '@/views/Index.vue'
 import Login from '@/views/Login'
+import UserProfile from '@/views/UserProfile'
 
 const routes = [
   {
@@ -16,7 +17,13 @@ const routes = [
     meta:{
       navBarType: 'register'
     }
+  },
+  {
+    path: '/userProfile',
+    name: 'UserProfile',
+    component: UserProfile,
   }
+
 ]
 
 const router = createRouter({
