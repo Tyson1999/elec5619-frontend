@@ -2,13 +2,15 @@
   <div class="background"></div>
   <div class="login-form-container">
     <div class="logo"></div>
-    <div class="one-word">Spice up your creating process</div>
+    <div class="one-word">Create an account</div>
     <div class="login-form">
       <el-input v-model="email" placeholder="Email address" class="login-input"></el-input>
+      <el-input v-model="nickname" placeholder="Nickname" class="login-input"></el-input>
       <el-input v-model="password" placeholder="Password" class="login-input"></el-input>
-      <el-button type="primary" class="login-button">Login</el-button>
+      <el-input v-model="password" placeholder="Retype password" class="login-input"></el-input>
+      <el-button type="primary" class="login-button">Sign up</el-button>
       <div class="forget-password">
-        <a href="#" class="forget-password">Forgot password?</a>
+        <a href="/login" class="forget-password">Already have an account?</a>
       </div>
       <div class="social-login">
         <el-button class="login-button">Continue with Google</el-button>
@@ -17,7 +19,7 @@
       </div>
       <el-divider></el-divider>
       <div class="policy">
-        You agree to follow our <a href="#"> Privacy Policy </a> and <a href="#"> Terms of Service </a> when login.
+        You agree to follow our <a href="#"> Privacy Policy </a> and <a href="#"> Terms of Service </a> when sign up.
       </div>
     </div>
   </div>
@@ -25,11 +27,12 @@
 
 <script>
 export default {
-  name: 'Login',
+  name: 'SignUp',
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      nickname: ''
     }
   }
 }

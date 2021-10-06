@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="footer-container">
     <div class="items">
-      <a href="#">What's xxxx</a>
+      <a href="#">What's Patronus</a>
       <a href="#">FAQ</a>
       <a href="#">TOS</a>
       <a href="#">Privacy Policy</a>
@@ -17,12 +17,12 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.footer-container {
   background-color: rgb(43, 51, 60);
   color: white;
   padding: 12px;
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
   left: 0;
   right: 0;
 }

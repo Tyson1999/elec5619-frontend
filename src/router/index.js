@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Index from '@/views/Index.vue'
+import Index from '@/views/Index'
 import Login from '@/views/Login'
+import Signup from '@/views/Signup'
+import Artist from '@/views/Artist'
+import Plan from '@/views/Plan'
 
 const routes = [
   {
@@ -15,6 +18,30 @@ const routes = [
     component: Login,
     meta:{
       navBarType: 'register'
+    }
+  },
+  {
+    path: '/signUp',
+    name: 'Signup',
+    component: Signup,
+    meta:{
+      navBarType: 'login'
+    }
+  },
+  {
+    path: '/artist',
+    name: 'Artist',
+    component: Artist,
+    meta:{
+      navBarType: 'login'
+    },
+  },
+  {
+    path: '/join',
+    name: 'Plan',
+    component: Plan,
+    meta: {
+      navBarType: 'login'
     }
   }
 ]

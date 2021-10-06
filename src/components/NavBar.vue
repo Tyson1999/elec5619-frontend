@@ -5,14 +5,18 @@
       <div class="search">
         <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
       </div>
-      <div class="login">
-        <el-button type="primary" round>Login</el-button>
-      </div>
+      <a href="/login">
+        <div class="login">
+          <el-button type="primary" round>Login</el-button>
+        </div>
+      </a>
     </div>
     <div v-else>
-      <div class="register">
-        <el-button type="primary" round>Sign up</el-button>
-      </div>
+      <a href="/signUp">
+        <div class="register">
+          <el-button type="primary" round>Sign up</el-button>
+        </div>
+      </a>
     </div>
   </div>
 </template>
