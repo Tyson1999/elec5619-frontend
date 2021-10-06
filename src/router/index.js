@@ -37,15 +37,15 @@ const routes = [
       navBarType: 'login'
     },
   },
-    {
-        path: '/join',
-        name: 'Plan',
-        component: Plan,
-        meta: {
-            navBarType: 'login'
-        }
-    },
-    {
+  {
+    path: '/join',
+    name: 'Plan',
+    component: Plan,
+    meta: {
+        navBarType: 'login'
+    }
+  },
+  {
     path: '/userProfile',
     name: 'UserProfile',
     component: UserProfile,
