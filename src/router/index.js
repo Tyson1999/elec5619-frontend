@@ -15,7 +15,6 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    // component: () => import('@/views/Login.vue'),
     component: Login,
     meta:{
       navBarType: 'register'
@@ -49,6 +48,11 @@ const routes = [
     path: '/userProfile',
     name: 'UserProfile',
     component: UserProfile,
+  },
+  {
+    path:'/newPost',
+    name: 'NewPost',
+    component: () => import('@/views/NewPost.vue')
   }
 ]
 
