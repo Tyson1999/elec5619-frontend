@@ -4,6 +4,7 @@ import Login from '@/views/Login'
 import Signup from '@/views/Signup'
 import Artist from '@/views/Artist'
 import Plan from '@/views/Plan'
+import UserProfile from '@/views/UserProfile'
 
 const routes = [
   {
@@ -36,13 +37,18 @@ const routes = [
       navBarType: 'login'
     },
   },
-  {
-    path: '/join',
-    name: 'Plan',
-    component: Plan,
-    meta: {
-      navBarType: 'login'
-    }
+    {
+        path: '/join',
+        name: 'Plan',
+        component: Plan,
+        meta: {
+            navBarType: 'login'
+        }
+    },
+    {
+    path: '/userProfile',
+    name: 'UserProfile',
+    component: UserProfile,
   }
 ]
 
