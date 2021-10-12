@@ -1,4 +1,4 @@
-<template>
+<template v-slot="tip" class="el-upload__tip">
   <div class="container">
       <el-tabs type="border-card" class="borderCard">
         <el-tab-pane label="Account Setting" class="account">
@@ -8,8 +8,18 @@
             </a>
             <el-button type="text" class="logout" @click="Logout()" v-show="displayUser">{{greeting}}</el-button>
           </div>
-          <span class="dot" @click="selectImg()">   
-            <p>Add Profile Picture</p>
+          <span class="dot">   
+            <el-upload
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              list-type="picture">
+              <span class="dot" @click="selectImg()">   
+              <p>Add Profile Picture</p>
+              </span>
+            </el-upload>
           </span>
           <el-form ref="form" :model="form" label-width="120px" class="autoFilled">
             <el-form-item label="Username">
@@ -108,6 +118,7 @@ export default {
             oldPassword:'',
             newPassword: '',
           },
+          fileList: [],
           displayUser:true,
            Artists: [{name: '吉田誠治',
                     description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
@@ -144,6 +155,18 @@ export default {
 
       selectImg(){
         console.log(1);
+      },
+      setImage: function (output) {
+      this.hasImage = true;
+      this.image = output;
+      console.log("Info", output.info);
+      console.log("Exif", output.exif);
+    },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
       }
      
 
