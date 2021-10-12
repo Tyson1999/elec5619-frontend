@@ -5,6 +5,8 @@ import Signup from '@/views/Signup'
 import Artist from '@/views/Artist'
 import Plan from '@/views/Plan'
 import UserProfile from '@/views/UserProfile'
+import SearchCreator from '@/views/SearchCreator'
+
 
 const routes = [
   {
@@ -53,7 +55,14 @@ const routes = [
     path:'/newPost',
     name: 'NewPost',
     component: () => import('@/views/NewPost.vue')
-  }
+  },
+  {
+    path:'/search',
+    name: 'SearchCreator',
+    component: SearchCreator
+  },
+  
+  
 ]
 
 const router = createRouter({

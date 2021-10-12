@@ -3,7 +3,7 @@
     <div class="logo"></div>
     <div class="function" v-if="navBarType === 'login'">
       <div class="search">
-        <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
+        <el-input v-model="searchContent" placeholder="Search Creators and tags" prefix-icon="el-icon-search"></el-input>
       </div>
       <a href="/login">
         <div class="login">
