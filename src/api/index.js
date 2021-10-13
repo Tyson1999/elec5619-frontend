@@ -1,3 +1,4 @@
+import axios from 'axios'
 import request from '../utils/request'
 
 export function login(user) {
@@ -10,5 +11,5 @@ export function login(user) {
 
 
 export function oneWord() {
-
+    return axios.get('https://api.eatrice.top/')
 }

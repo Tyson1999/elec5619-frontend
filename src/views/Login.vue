@@ -2,7 +2,7 @@
   <div class="background"></div>
   <div class="login-form-container">
     <div class="logo"></div>
-    <div class="one-word">Spice up your creating process</div>
+    <div class="one-word">{{one_word}}</div>
     <div class="login-form">
       <el-input v-model="email" placeholder="Email address" class="login-input"></el-input>
       <el-input v-model="password" placeholder="Password" class="login-input"></el-input>
@@ -24,16 +24,26 @@
 </template>
 
 <script>
-import {login} from '@/api/index'
+import {login, oneWord} from '@/api/index'
 export default {
   name: 'Login',
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      one_word: ''
     }
   },
+  created() {
+    this.oneWord()
+  },
   methods: {
+    oneWord() {
+      oneWord().then(res => {
+        res = res['data']
+        this.one_word = res['Content']
+      })
+    },
     login() {
       const email = this.email
       const password = this.password
@@ -75,6 +85,7 @@ export default {
 
 .one-word{
   margin-top: -10px;
+  padding: 0 10px 0 10px;
 }
 
 .login-form {
