@@ -247,6 +247,8 @@ export default {
 
       Modify(artist){
         console.log(artist)
+        this.$router.push('NewPost')
+
       },
 
       Confirm(){
