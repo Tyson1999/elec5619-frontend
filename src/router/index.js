@@ -5,6 +5,7 @@ import Signup from '@/views/Signup'
 import Artist from '@/views/Artist'
 import Plan from '@/views/Plan'
 import UserProfile from '@/views/UserProfile'
+import NotFound from '@/views/404'
 
 const routes = [
   {
@@ -29,7 +30,7 @@ const routes = [
     }
   },
   {
-    path: '/artist',
+    path: '/artist/:id',
     name: 'Artist',
     component: Artist,
     meta:{
@@ -37,7 +38,7 @@ const routes = [
     },
   },
   {
-    path: '/join',
+    path: '/join/:id',
     name: 'Plan',
     component: Plan,
     meta: {
@@ -53,6 +54,17 @@ const routes = [
     path:'/newPost',
     name: 'NewPost',
     component: () => import('@/views/NewPost.vue')
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: NotFound
+  },
+  {
+    // Default router, return 404
+    path: '/:catchAll(.*)',
+    name: 'Default',
+    redirect: '/404'
   }
 ]
 

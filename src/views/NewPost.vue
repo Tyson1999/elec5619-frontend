@@ -1,12 +1,23 @@
 <template>
   <div class="container">
-    <vue-tinymce v-model="value" :config="config"/>
+    <el-input v-model="title" placeholder="Enter the title here"/>
+    <div class="placeholder"
+         v-loading="loading"
+         element-loading-background="rgba(0, 0, 0, 0.1)"
+         v-if="loading"/>
+    <vue-tinymce
+        v-model="content"
+        :config="config"
+    />
+    <div class="button-group">
+      <el-button>Save draft</el-button>
+      <el-button type="primary">Submit</el-button>
+    </div>
   </div>
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
-const VueTinymce = defineAsyncComponent(() => import("@panhezeng/vue-tinymce"));
+import VueTinymce from "@panhezeng/vue-tinymce";
 export default {
   name: 'NewPost',
   components: {
@@ -14,11 +25,20 @@ export default {
   },
   data(){
     return {
+      loading: true,
       config: {
         language: 'enUS',
-        code_dialog_height: 450, // 代码框高度 、宽度
+        code_dialog_height: 450,
+        height: 300,
+        init_instance_callback: this.editInited
       },
-      value: ''
+      title: '',
+      content: ''
+    }
+  },
+  methods: {
+    editInited(){
+      this.loading = false
     }
   }
 }
@@ -27,6 +47,15 @@ export default {
 <style scoped>
 .container {
   max-width: 1280px;
-  margin: 0 auto;
+  margin: 30px auto;
+}
+
+.placeholder {
+  height: 300px;
+  width: 100%;
+}
+
+.button-group {
+  margin-top: 35px;
 }
 </style>

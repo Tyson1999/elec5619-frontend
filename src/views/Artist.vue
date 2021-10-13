@@ -82,6 +82,10 @@ export default {
       }]
     }
   },
+  mounted() {
+    // Obtain user id, and request the related data from backend
+    console.log(this.$route.params)
+  },
   methods: {
     interceptOverflow(text) {
       if (text.length > 100) {
