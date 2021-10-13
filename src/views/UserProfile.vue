@@ -40,33 +40,39 @@
               <el-button type="primary" class="back" @click="Back()" round>Back</el-button>
             </a>
             <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
+            <el-button type="text" class="edit" @click="Edit()">Edit</el-button>
+
           </div>
           <div class="block" v-for="artist in Artists" :key="artist">
+            <el-col :span="4" class="delete" v-show="displayOption">
+              <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
+            </el-col>
             <el-col :span="16">
-            <el-card shadow="hover" class="favList">
-              <div class="row">
-                <div class="column1">
-                  <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
-                </div>
-                <div class="column2">
-                  <h5>{{artist.name}}</h5>
-                  <p>{{artist.description}}</p>
-                </div>
-                <div class="column3">
-                  <el-carousel :interval="100000" type="card" height="200px">
-                    <el-carousel-item v-for="url in artist.urls" :key="url">
-                      <el-image
-                        style="width: 200px; height: 160px ; "
-                        :src="url"
-                        :fit="fill">
-                      </el-image>
-                    </el-carousel-item>
-                  </el-carousel>
-                </div>
-              </div>        
-            </el-card>
-          </el-col>
+              <el-card shadow="hover" class="favList">
+                <div class="row">
+                  <div class="column1">
+                    <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
+                  </div>
+                  <div class="column2">
+                    <h5>{{artist.name}}</h5>
+                    <p>{{artist.description}}</p>
+                  </div>
+                  <div class="column3">
+                    <el-carousel :interval="100000" type="card" height="200px">
+                      <el-carousel-item v-for="url in artist.urls" :key="url">
+                        <el-image
+                          style="width: 200px; height: 160px ; "
+                          :src="url"
+                          :fit="fill">
+                        </el-image>
+                      </el-carousel-item>
+                    </el-carousel>
+                  </div>
+                </div>        
+              </el-card>
+            </el-col>
           </div>
+          <el-button type="success" plain v-show="displayConfirm" @click="Confirm()">Confirm</el-button>
         </el-tab-pane>  
         <el-tab-pane label="Subscribe List" class="subscribe">
           <div class="button">
@@ -74,8 +80,13 @@
               <el-button type="primary" class="back"  round>Back</el-button>
             </a>
             <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
+            <el-button type="text" class="edit" @click="Edit()">Edit</el-button>
+
           </div>
           <div class="block" v-for="artist in Artists" :key="artist">
+            <el-col :span="4" class="delete" v-show="displayOption">
+              <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
+            </el-col>
             <el-col :span="16">
             <el-card shadow="hover" class="favList">
               <div class="row">
@@ -101,7 +112,51 @@
             </el-card>
           </el-col>
           </div>
+          <el-button type="success" plain v-show="displayConfirm" @click="Confirm()">Confirm</el-button>
         </el-tab-pane>
+        <el-tab-pane label="My Creation List" class="creation" :disabled="isDisabled">
+          <div class="button">
+            <a href="javascript:history.go(-1)">
+              <el-button type="primary" class="back"  round>Back</el-button>
+            </a>
+            <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
+            <el-button type="text" class="edit" @click="Edit()">Edit</el-button>
+
+          </div>
+          <div class="block" v-for="artist in Artists" :key="artist">
+            <el-col :span="4" class="delete" v-show="displayOption">
+              <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
+              <el-button type="primary" icon="el-icon-edit" circle @click="Modify(artist)"></el-button>
+
+            </el-col>
+            <el-col :span="16">
+            <el-card shadow="hover" class="favList">
+              <div class="row">
+                <div class="column1">
+                  <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
+                </div>
+                <div class="column2">
+                  <h5>{{artist.name}}</h5>
+                  <p>{{artist.description}}</p>
+                </div>
+                <div class="column3">
+                  <el-carousel :interval="100000" type="card" height="200px">
+                    <el-carousel-item v-for="url in artist.urls" :key="url">
+                      <el-image
+                        style="width: 200px; height: 160px ; "
+                        :src="url"
+                        :fit="fill">
+                      </el-image>
+                    </el-carousel-item>
+                  </el-carousel>
+                </div>
+              </div>        
+            </el-card>
+          </el-col>
+          </div>
+          <el-button type="success" plain v-show="displayConfirm" @click="Confirm()">Confirm</el-button>
+        </el-tab-pane>
+
       </el-tabs>
   </div>
 </template>
@@ -120,18 +175,21 @@ export default {
           },
           fileList: [],
           displayUser:true,
-           Artists: [{name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    }],
+          displayOption:false,
+          displayConfirm:false,
+          isDisabled: true,
+          Artists: [{name: '吉田誠治',
+                  description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+                  urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
+                  },
+                  {name: '吉田誠治',
+                  description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+                  urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
+                  },
+                  {name: '吉田誠治',
+                  description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+                  urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
+                  }],
                     
           
         }
@@ -167,7 +225,36 @@ export default {
       },
       handlePreview(file) {
         console.log(file);
+      },
+
+      Edit(){
+        if(this.displayOption == true){
+          this.displayOption=false;
+          this.displayConfirm=false;
+          this.isDisabled=true;
+
+        }else{
+          this.displayOption=true;
+          this.displayConfirm=true;
+          this.isDisabled=false;
+
+        }
+      },
+
+      Delete(artist){
+        console.log(artist)
+      },
+
+      Modify(artist){
+        console.log(artist)
+      },
+
+      Confirm(){
+        this.displayOption=false;
+        this.displayConfirm=false;
       }
+      
+
      
 
     }
@@ -192,6 +279,8 @@ export default {
 .account .dot {
   height: 100px;
   width: 100px;
+  margin-left: auto;
+  margin-right: auto;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
@@ -219,7 +308,7 @@ export default {
     margin-left: auto;
 }
 .autoFilled {
-    width:30%;
+    width:50%;
     margin-top: 40px;
     margin-left: auto;
     margin-right: auto;
@@ -234,6 +323,10 @@ export default {
   width:1000px;
   height:200px;
   margin-left: 100px;
+}
+.delete {
+    margin-top: 80px;
+
 }
 .block {
   display: inline-block;

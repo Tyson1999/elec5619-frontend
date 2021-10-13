@@ -6,6 +6,8 @@ import Artist from '@/views/Artist'
 import Plan from '@/views/Plan'
 import UserProfile from '@/views/UserProfile'
 import SearchCreator from '@/views/SearchCreator'
+import FAQ from '@/views/FAQ'
+
 
 
 const routes = [
@@ -60,6 +62,11 @@ const routes = [
     path:'/search',
     name: 'SearchCreator',
     component: SearchCreator
+  },
+  {
+    path:'/FAQ',
+    name: 'FAQ',
+    component: FAQ
   },
   
   
