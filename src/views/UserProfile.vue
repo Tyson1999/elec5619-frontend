@@ -47,7 +47,7 @@
             <el-col :span="4" class="delete" v-show="displayOption">
               <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="20">
               <el-card shadow="hover" class="favList">
                 <div class="row">
                   <div class="column1">
@@ -72,7 +72,8 @@
               </el-card>
             </el-col>
           </div>
-          <el-button type="success" plain v-show="displayConfirm" @click="Confirm()">Confirm</el-button>
+          <br><br>
+          <el-button type="success" plain v-show="displayConfirm" class="confirm" @click="Confirm()">Confirm</el-button>
         </el-tab-pane>  
         <el-tab-pane label="Subscribe List" class="subscribe">
           <div class="button">
@@ -112,7 +113,8 @@
             </el-card>
           </el-col>
           </div>
-          <el-button type="success" plain v-show="displayConfirm" @click="Confirm()">Confirm</el-button>
+          <br><br>
+          <el-button type="success" plain v-show="displayConfirm" class="confirm" @click="Confirm()">Confirm</el-button>
         </el-tab-pane>
         <el-tab-pane label="My Creation List" class="creation" :disabled="isDisabled">
           <div class="button">
@@ -154,7 +156,10 @@
             </el-card>
           </el-col>
           </div>
-          <el-button type="success" plain v-show="displayConfirm" @click="Confirm()">Confirm</el-button>
+          <br><br>
+          <!-- <div class="confirm"> -->
+            <el-button type="success" class="confirm" plain  @click="Confirm()">Confirm</el-button>
+          <!-- </div> -->
         </el-tab-pane>
 
       </el-tabs>
@@ -268,8 +273,15 @@ export default {
 
 
 <style scoped>
+
 .container {
   background-color: antiquewhite;
+  /* position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto; */
 }
 
 .el-tabs--border-card {
@@ -277,6 +289,9 @@ export default {
 }
 .container {
   background-color: antiquewhite;
+}
+.account {
+  height: 500px;
 }
 .account .dot {
   height: 100px;
@@ -286,10 +301,6 @@ export default {
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
-}
-
-.favorite {
-  height: 800px;
 }
 
 .subscribe .dot {
@@ -311,7 +322,7 @@ export default {
 }
 .autoFilled {
     width:50%;
-    margin-top: 40px;
+    /* margin-top: 40px; */
     margin-left: auto;
     margin-right: auto;
     
@@ -358,38 +369,12 @@ img {
   display: table;
   clear: both;
 }
-.prev, .next {
-  cursor: pointer;
-  position: absolute;
-  /* top: 50%; */
-  /* width: auto; */
-  padding: 10px;
-  /* margin-top: -22px;/ */
-  /* color: white; */
-  font-weight: bold;
-  font-size: 18px;
-  transition: 0.6s ease;
-  border-radius: 0 3px 3px 0;
-  user-select: none;
-}
 
-.next {
-  background-color:lightgray;
-  border-radius: 3px 0 0 3px;
-  margin-top: 5%;  
-  margin-left: -30px;
+.confirm {
+  margin-bottom: 10px;
 
 }
-.prev {
-  background-color:lightgray;
-  border-radius: 3px 0 0 3px;
-  margin-top: 15px;  
-  margin-left: -640px;
 
-}
-.prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
-}
 
 
 
