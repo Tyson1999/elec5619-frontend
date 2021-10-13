@@ -8,6 +8,10 @@ import UserProfile from '@/views/UserProfile'
 import NotFound from '@/views/404'
 import SearchCreator from '@/views/SearchCreator'
 import FAQ from '@/views/FAQ'
+import TOS from '@/views/TOS'
+import About from '@/views/About'
+import Patronus from '@/views/Patronus'
+
 
 
 const routes = [
@@ -59,9 +63,9 @@ const routes = [
         component: () => import('@/views/NewPost.vue')
   },
   {
-          path:'/search',
-          name: 'SearchCreator',
-          component: SearchCreator
+        path:'/search',
+        name: 'SearchCreator',
+        component: SearchCreator
   },
   {
         path: '/404',
@@ -73,7 +77,21 @@ const routes = [
         name: 'FAQ',
         component: FAQ
   },
-
+  {
+       path:'/About',
+       name: 'About',
+       component: About
+  },
+  {
+      path:'/Patronus',
+      name: 'Patronus',
+      component: Patronus
+  },
+  {
+      path:'/TOS',
+      name: 'TOS',
+      component: TOS
+  },
 
   {    // Default router, return 404
         path: '/:catchAll(.*)',

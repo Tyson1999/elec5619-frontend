@@ -22,7 +22,8 @@ export default {
   color: white;
   padding: 12px;
   position: absolute;
-  bottom: 0px;
+  /*bottom: 0px;*/
+   bottom: -100px;
   left: 0;
   right: 0;
 }
