@@ -5,7 +5,7 @@
     <div v-if="!logined">
       <div class="function" v-if="navBarType === 'login'">
         <div class="search">
-          <el-input v-model="searchContent" placeholder="Search Creators and tags" prefix-icon="el-icon-search"></el-input>
+          <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
         </div>
         <a href="/login">
           <div class="login">
@@ -23,10 +23,10 @@
     </div>
     <!-- User login -->
     <div v-else class="avatar">
-      <div class="search">
-        <el-input v-model="searchContent" placeholder="Search Creators and tags" prefix-icon="el-icon-search"></el-input>
-      </div>
       <Avatar />
+      <div class="search">
+        <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
+      </div>
     </div>
   </div>
 </template>
@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       searchContent: '',
-      logined: false
+      logined: true
     }
   },
   watch: {

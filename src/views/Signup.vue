@@ -1,14 +1,14 @@
 <template>
   <div class="background"></div>
-  <div class="login-form-container">
+  <div class="login-form-container" v-loading="loading">
     <div class="logo"></div>
     <div class="one-word">Create an account</div>
     <div class="login-form">
       <el-input v-model="email" placeholder="Email address" class="login-input"></el-input>
       <el-input v-model="nickname" placeholder="Nickname" class="login-input"></el-input>
-      <el-input v-model="password" placeholder="Password" class="login-input"></el-input>
-      <el-input v-model="password" placeholder="Retype password" class="login-input"></el-input>
-      <el-button type="primary" class="login-button">Sign up</el-button>
+      <el-input v-model="password" placeholder="Password" class="login-input" type="password"></el-input>
+      <el-input v-model="retype_password" placeholder="Retype password" class="login-input" type="password">></el-input>
+      <el-button type="primary" class="login-button" @click="register">Sign up</el-button>
       <div class="forget-password">
         <a href="/login" class="forget-password">Already have an account?</a>
       </div>
@@ -26,13 +26,54 @@
 </template>
 
 <script>
+import {register} from '@/api/user'
+import {ElMessage} from 'element-plus'
+
 export default {
   name: 'SignUp',
   data() {
     return {
       email: '',
       password: '',
-      nickname: ''
+      nickname: '',
+      retype_password: '',
+      loading: false
+    }
+  },
+  methods: {
+    register() {
+      this.loading = true
+      const email = this.email
+      const password = this.password
+      const retype_password = this.retype_password
+      const username = this.nickname
+      if (password != retype_password){
+        ElMessage.error("Two passwords don't match")
+        return;
+      }
+      if (email == '' || password == '' || username == '' || retype_password == ''){
+        ElMessage.error("Please fill in the form")
+        return;
+      }
+      register({email, password, username})
+          .then(() => {
+            ElMessage.success("Register successfully, you'll be jumped to the login page soon")
+            this.clearForm()
+            setTimeout(() => {
+              this.$router.push('/login')
+            }, 1500)
+          })
+          .catch(err => {
+            console.log({err})
+            this.clearForm()
+          })
+    },
+    clearForm() {
+      this.email = ''
+      this.password = ''
+      this.nickname = ''
+      this.retype_password = ''
+      this.loading = false
     }
   }
 }

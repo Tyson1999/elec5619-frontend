@@ -69,13 +69,12 @@ const routes = [
         component: NotFound
   },
   {
-    path:'/FAQ',
-    name: 'FAQ',
-    component: FAQ
+        path:'/FAQ',
+        name: 'FAQ',
+        component: FAQ
   },
-  
-  
-  
+
+
   {    // Default router, return 404
         path: '/:catchAll(.*)',
         name: 'Default',

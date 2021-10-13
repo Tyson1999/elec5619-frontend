@@ -4,8 +4,8 @@
     <div class="logo"></div>
     <div class="one-word">{{one_word}}</div>
     <div class="login-form">
-      <el-input v-model="email" placeholder="Email address" class="login-input"></el-input>
-      <el-input v-model="password" placeholder="Password" class="login-input"></el-input>
+      <el-input v-model="email" placeholder="Email address" class="login-input" />
+      <el-input v-model="password" placeholder="Password" class="login-input" type="password" />
       <el-button type="primary" class="login-button" @click="login()">Login</el-button>
       <div class="forget-password">
         <a href="#" class="forget-password">Forgot password?</a>
@@ -24,7 +24,11 @@
 </template>
 
 <script>
-import {login, oneWord} from '@/api/index'
+// external random one word API
+import {oneWord} from '@/api/index'
+import {login} from '@/api/user'
+import { ElMessage } from "element-plus";
+
 export default {
   name: 'Login',
   data() {
@@ -47,10 +51,15 @@ export default {
     login() {
       const email = this.email
       const password = this.password
+      if (email == '' || password == ''){
+        ElMessage.error("Please enter your email and password")
+        return;
+      }
       login({email, password})
           .then(res => {
-            console.log(res)
+            ElMessage.success(res['msg'])
           })
+          .catch(err=>{console.log({err})})
     }
   }
 }
