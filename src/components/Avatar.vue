@@ -27,6 +27,6 @@ export default {
 }
 
 .avatar{
-  background-image: url()
+
 }
 </style>
