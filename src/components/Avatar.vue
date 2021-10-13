@@ -11,7 +11,7 @@
           margin-left: -8px;
           font-weight: bold;
           color: #666;
-          font-size: 14px">
+          font-size: 12px">
         >
       </div>
     </div>
