@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@panhezeng/vue-tinymce": "^3.0.3",
+    "axios": "^0.23.0",
     "core-js": "^3.6.5",
     "element-plus": "^1.1.0-beta.6",
+    "js-cookie": "^3.0.1",
     "swiper": "^7.0.8",
     "tinymce": "^5.9.2",
     "vue": "^3.0.0",

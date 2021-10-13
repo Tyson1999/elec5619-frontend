@@ -40,7 +40,7 @@ export default {
 
 <style scoped>
 .nav-container{
-  background: antiquewhite;
+  /*background: antiquewhite;*/
   height: 64px;
   padding: 0px 16px;
   display: flex;
