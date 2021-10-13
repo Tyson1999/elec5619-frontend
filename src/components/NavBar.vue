@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import {userInfo} from '@/api/user'
 import Avatar from './Avatar'
 export default {
   name: 'NavBar',
@@ -42,8 +43,24 @@ export default {
   data() {
     return {
       searchContent: '',
-      logined: true
+      logined: false
     }
+  },
+  created() {
+    userInfo()
+        .then(res => {
+          res = res['data']['data']
+          const username = res['username']
+          const role = res['role']
+          const email = res['email']
+          const avatar = res['avatar']
+          this.$store.commit('setUser', {
+            username,
+            role,
+            email,
+            avatar
+          })})
+        .catch((err) => {console.log(err)})
   },
   watch: {
     navBarType(to) {

@@ -1,6 +1,6 @@
 <template>
   <div class="background"></div>
-  <div class="login-form-container">
+  <div class="login-form-container" v-loading="loading">
     <div class="logo"></div>
     <div class="one-word">{{one_word}}</div>
     <div class="login-form">
@@ -27,6 +27,7 @@
 // external random one word API
 import {oneWord} from '@/api/index'
 import {login} from '@/api/user'
+import {setToken} from '@/utils/auth'
 import { ElMessage } from "element-plus";
 
 export default {
@@ -35,7 +36,8 @@ export default {
     return {
       email: '',
       password: '',
-      one_word: ''
+      one_word: '',
+      loading: false
     }
   },
   created() {
@@ -49,6 +51,7 @@ export default {
       })
     },
     login() {
+      this.loading = true
       const email = this.email
       const password = this.password
       if (email == '' || password == ''){
@@ -58,8 +61,11 @@ export default {
       login({email, password})
           .then(res => {
             ElMessage.success(res['msg'])
+            setToken(res['token'])
+            this.$router.go(0);
           })
-          .catch(err=>{console.log({err})})
+          .catch(err => console.log({err}))
+          .finally(() => this.loading = false)
     }
   }
 }

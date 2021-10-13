@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-// import store from '@/store'
+import {getToken} from '@/utils/auth'
+import {logout} from '@/utils/index'
 
 // create an axios instance
 const service = axios.create({
@@ -10,37 +11,47 @@ const service = axios.create({
 })
 
 // request interceptor
-// service.interceptors.request.use(
-//     config => {
-//         // debugger
-//         // console.log(store.getters.token)
-//         if (store.getters.token) {
-//             // let each request carry token
-//             config.headers['Authorization'] = `Bearer ${getToken()}`
-//         }
-//         return config
-//     },
-//     error => {
-//         // do something with request error
-//         console.log(error)
-//         return Promise.reject(error)
-//     }
-// )
+service.interceptors.request.use(
+    config => {
+        const token = getToken()
+        if (token) {
+            // let each request carry token
+            config.headers['Authorization'] = `${token}`
+        }
+        return config
+    },
+    error => {
+        // do something with request error
+        console.log(error)
+        return Promise.reject(error)
+    }
+)
 
 // response interceptor
 service.interceptors.response.use(
     response => {
         const res = response.data
+        if (res.code == 0) {
+            return res
+        }
+        // jwt error
+        else if (res.code == -2) {
+            ElMessage({
+                message: res.msg || 'JWT token invalid or expired',
+                type: 'error',
+                duration: 5 * 1000
+            })
+            logout()
+            return Promise.reject(new Error(res.msg || 'JWT token invalid or expired'))
+        }
         // if the custom code is not 0, it is judged as an error.
-        if (res.code !== 0) {
+        else {
             ElMessage({
                 message: res.msg || 'Request failed',
                 type: 'error',
                 duration: 5 * 1000
             })
             return Promise.reject(new Error(res.msg || 'Request failed'))
-        } else {
-            return res
         }
     },
     error => {
