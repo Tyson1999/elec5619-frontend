@@ -1,33 +1,48 @@
 <template>
   <div class="nav-container">
     <div class="logo"></div>
-    <div class="function" v-if="navBarType === 'login'">
+    <!-- User not login -->
+    <div v-if="!logined">
+      <div class="function" v-if="navBarType === 'login'">
+        <div class="search">
+          <el-input v-model="searchContent" placeholder="Search Creators and tags" prefix-icon="el-icon-search"></el-input>
+        </div>
+        <a href="/login">
+          <div class="login">
+            <el-button type="primary" round>Login</el-button>
+          </div>
+        </a>
+      </div>
+      <div v-else>
+        <a href="/signUp">
+          <div class="register">
+            <el-button type="primary" round>Sign up</el-button>
+          </div>
+        </a>
+      </div>
+    </div>
+    <!-- User login -->
+    <div v-else class="avatar">
       <div class="search">
         <el-input v-model="searchContent" placeholder="Search Creators and tags" prefix-icon="el-icon-search"></el-input>
       </div>
-      <a href="/login">
-        <div class="login">
-          <el-button type="primary" round>Login</el-button>
-        </div>
-      </a>
-    </div>
-    <div v-else>
-      <a href="/signUp">
-        <div class="register">
-          <el-button type="primary" round>Sign up</el-button>
-        </div>
-      </a>
+      <Avatar />
     </div>
   </div>
 </template>
 
 <script>
+import Avatar from './Avatar'
 export default {
   name: 'NavBar',
+  components: {
+    Avatar
+  },
   props: ['navBarType'],
   data() {
     return {
-      searchContent: ''
+      searchContent: '',
+      logined: false
     }
   },
   watch: {
@@ -61,5 +76,9 @@ export default {
 
 .login, .register{
   margin: 0 30px 0 20px;
+}
+
+.avatar {
+  display: flex;
 }
 </style>
