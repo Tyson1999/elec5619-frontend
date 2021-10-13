@@ -6,65 +6,71 @@ import Artist from '@/views/Artist'
 import Plan from '@/views/Plan'
 import UserProfile from '@/views/UserProfile'
 import NotFound from '@/views/404'
+import SearchCreator from '@/views/SearchCreator'
 
 const routes = [
   {
-    path: '/',
-    name: 'Index',
-    component: Index,
+        path: '/',
+        name: 'Index',
+        component: Index,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    meta:{
-      navBarType: 'register'
-    }
+        path: '/login',
+        name: 'Login',
+        component: Login,
+        meta:{
+          navBarType: 'register'
+        }
   },
   {
-    path: '/signUp',
-    name: 'Signup',
-    component: Signup,
-    meta:{
-      navBarType: 'login'
-    }
+        path: '/signUp',
+        name: 'Signup',
+        component: Signup,
+        meta:{
+          navBarType: 'login'
+        }
   },
   {
-    path: '/artist/:id',
-    name: 'Artist',
-    component: Artist,
-    meta:{
-      navBarType: 'login'
-    },
+        path: '/artist/:id',
+        name: 'Artist',
+        component: Artist,
+        meta:{
+          navBarType: 'login'
+        },
   },
   {
-    path: '/join/:id',
-    name: 'Plan',
-    component: Plan,
-    meta: {
-        navBarType: 'login'
-    }
+        path: '/join/:id',
+        name: 'Plan',
+        component: Plan,
+        meta: {
+            navBarType: 'login'
+        }
   },
   {
-    path: '/userProfile',
-    name: 'UserProfile',
-    component: UserProfile,
+        path: '/userProfile',
+        name: 'UserProfile',
+        component: UserProfile,
   },
   {
-    path:'/newPost',
-    name: 'NewPost',
-    component: () => import('@/views/NewPost.vue')
+        path:'/newPost',
+        name: 'NewPost',
+        component: () => import('@/views/NewPost.vue')
   },
   {
-    path: '/404',
-    name: '404',
-    component: NotFound
+          path:'/search',
+          name: 'SearchCreator',
+          component: SearchCreator
   },
   {
-    // Default router, return 404
-    path: '/:catchAll(.*)',
-    name: 'Default',
-    redirect: '/404'
+        path: '/404',
+        name: '404',
+        component: NotFound
+  },
+  {
+        // Default router, return 404
+        path: '/:catchAll(.*)',
+        name: 'Default',
+        redirect: '/404'
   }
 ]
 

@@ -69,6 +69,10 @@
         </div>
       </div>
     </div>
+    <div class="button-group">
+      <el-button>Cancel</el-button>
+      <el-button type="primary">Confirm</el-button>
+    </div>
   </div>
 </template>
 
@@ -202,5 +206,9 @@ export default {
 
 .payment-method .unselected {
   background: rgba(255, 255, 255, .8)
+}
+
+.button-group {
+  margin-top: 20px;
 }
 </style>

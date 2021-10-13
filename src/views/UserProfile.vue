@@ -1,4 +1,4 @@
-<template>
+<template v-slot="tip" class="el-upload__tip">
   <div class="container">
       <el-tabs type="border-card" class="borderCard">
         <el-tab-pane label="Account Setting" class="account">
@@ -8,8 +8,18 @@
             </a>
             <el-button type="text" class="logout" @click="Logout()" v-show="displayUser">{{greeting}}</el-button>
           </div>
-          <span class="dot" @click="selectImg()">   
-            <p>Add Profile Picture</p>
+          <span class="dot">   
+            <el-upload
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              list-type="picture">
+              <span class="dot" @click="selectImg()">   
+              <p>Add Profile Picture</p>
+              </span>
+            </el-upload>
           </span>
           <el-form ref="form" :model="form" label-width="120px" class="autoFilled">
             <el-form-item label="Username">
@@ -31,7 +41,7 @@
             </a>
             <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
           </div>
-          <div class="block" v-for="artist in favArtists" :key="artist">
+          <div class="block" v-for="artist in Artists" :key="artist">
             <el-col :span="16">
             <el-card shadow="hover" class="favList">
               <div class="row">
@@ -39,19 +49,19 @@
                   <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
                 </div>
                 <div class="column2">
-                  <h5>{{favArtists}}</h5>
-                  <p>{{favArtistsDes}}</p>
+                  <h5>{{artist.name}}</h5>
+                  <p>{{artist.description}}</p>
                 </div>
                 <div class="column3">
-                  <div class="block" v-for="url in urls" :key="url">
-                    <el-image
-                    style="width: 200px; height: 160px ; margin-left: 20px;"
-                    :src="url"
-                    :fit="fill">
-                    </el-image>
-                    <!-- <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                    <a class="next" onclick="plusSlides(1)">&#10095;</a>  -->
-                  </div>               
+                  <el-carousel :interval="100000" type="card" height="200px">
+                    <el-carousel-item v-for="url in artist.urls" :key="url">
+                      <el-image
+                        style="width: 200px; height: 160px ; "
+                        :src="url"
+                        :fit="fill">
+                      </el-image>
+                    </el-carousel-item>
+                  </el-carousel>
                 </div>
               </div>        
             </el-card>
@@ -65,7 +75,7 @@
             </a>
             <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
           </div>
-          <div class="block" v-for="artist in favArtists" :key="artist">
+          <div class="block" v-for="artist in Artists" :key="artist">
             <el-col :span="16">
             <el-card shadow="hover" class="favList">
               <div class="row">
@@ -73,19 +83,19 @@
                   <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
                 </div>
                 <div class="column2">
-                  <h5>{{favArtists}}</h5>
-                  <p>{{favArtistsDes}}</p>
+                  <h5>{{artist.name}}</h5>
+                  <p>{{artist.description}}</p>
                 </div>
                 <div class="column3">
-                  <div class="block" v-for="url in urls" :key="url">
-                    <el-image
-                    style="width: 200px; height: 160px ; margin-left: 20px;"
-                    :src="url"
-                    :fit="fill">
-                    </el-image>
-                    <!-- <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                    <a class="next" onclick="plusSlides(1)">&#10095;</a>  -->
-                  </div>     
+                  <el-carousel :interval="100000" type="card" height="200px">
+                    <el-carousel-item v-for="url in artist.urls" :key="url">
+                      <el-image
+                        style="width: 200px; height: 160px ; "
+                        :src="url"
+                        :fit="fill">
+                      </el-image>
+                    </el-carousel-item>
+                  </el-carousel>
                 </div>
               </div>        
             </el-card>
@@ -108,10 +118,21 @@ export default {
             oldPassword:'',
             newPassword: '',
           },
+          fileList: [],
           displayUser:true,
-          urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg'],
-          favArtists: ['吉田誠治','吉田誠治'],
-          favArtistsDes:['背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。','背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。']
+           Artists: [{name: '吉田誠治',
+                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
+                    },
+                    {name: '吉田誠治',
+                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
+                    },
+                    {name: '吉田誠治',
+                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
+                    }],
+                    
           
         }
     },
@@ -134,6 +155,18 @@ export default {
 
       selectImg(){
         console.log(1);
+      },
+      setImage: function (output) {
+      this.hasImage = true;
+      this.image = output;
+      console.log("Info", output.info);
+      console.log("Exif", output.exif);
+    },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
       }
      
 
@@ -146,7 +179,11 @@ export default {
 
 
 <style scoped>
-.borderCard {
+.container {
+  background-color: antiquewhite;
+}
+
+.el-tabs--border-card {
   background-color: antiquewhite;
 }
 .container {
@@ -159,15 +196,11 @@ export default {
   border-radius: 50%;
   display: inline-block;
 }
-.account {
-  height: 450px;
-}
+
 .favorite {
   height: 800px;
 }
-.subscribe {
-  height: 800px;
-}
+
 .subscribe .dot {
   height: 100px;
   width: 100px;
@@ -233,7 +266,7 @@ img {
 .prev, .next {
   cursor: pointer;
   position: absolute;
-  top: 50%;
+  /* top: 50%; */
   /* width: auto; */
   padding: 10px;
   /* margin-top: -22px;/ */
@@ -248,7 +281,7 @@ img {
 .next {
   background-color:lightgray;
   border-radius: 3px 0 0 3px;
-  margin-top: 15px;  
+  margin-top: 5%;  
   margin-left: -30px;
 
 }
