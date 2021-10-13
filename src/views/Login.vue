@@ -41,7 +41,7 @@ export default {
     oneWord() {
       oneWord().then(res => {
         res = res['data']
-        this.one_word = res['Content']
+        this.one_word = res['Content'] + ' 🌟'
       })
     },
     login() {
@@ -85,7 +85,7 @@ export default {
 
 .one-word{
   margin-top: -10px;
-  padding: 0 10px 0 10px;
+  padding: 0 20px 0 20px;
 }
 
 .login-form {
