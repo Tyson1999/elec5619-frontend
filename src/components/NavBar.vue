@@ -2,7 +2,7 @@
   <div class="nav-container">
     <div class="logo"></div>
     <!-- User not login -->
-    <div v-if="!logined">
+    <div v-if="!isLogin">
       <div class="function" v-if="navBarType === 'login'">
         <div class="search">
           <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import {userInfo} from '@/api/user'
 import Avatar from './Avatar'
+import { mapState } from 'vuex'
 export default {
   name: 'NavBar',
   components: {
@@ -42,25 +42,13 @@ export default {
   props: ['navBarType'],
   data() {
     return {
-      searchContent: '',
-      logined: false
+      searchContent: ''
     }
   },
-  created() {
-    userInfo()
-        .then(res => {
-          res = res['data']['data']
-          const username = res['username']
-          const role = res['role']
-          const email = res['email']
-          const avatar = res['avatar']
-          this.$store.commit('setUser', {
-            username,
-            role,
-            email,
-            avatar
-          })})
-        .catch((err) => {console.log(err)})
+  computed: {
+    ...mapState({
+      isLogin: state => state.email != ''
+    })
   },
   watch: {
     navBarType(to) {

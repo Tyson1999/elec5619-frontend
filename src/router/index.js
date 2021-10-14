@@ -12,13 +12,11 @@ import TOS from '@/views/TOS'
 import About from '@/views/About'
 import Patronus from '@/views/Patronus'
 
-
-
 const routes = [
   {
         path: '/',
         name: 'Index',
-        component: Index,
+        component: Index
   },
   {
         path: '/login',

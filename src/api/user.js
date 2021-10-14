@@ -1,4 +1,3 @@
-import axios from 'axios'
 import request from '../utils/request'
 
 export function login(user) {
@@ -17,10 +16,10 @@ export function register(user) {
     })
 }
 
-export function userInfo() {
-    return axios.get(process.env.VUE_APP_BASE_API + '/api/getUserInfo')
-    // return request({
-    //     url: '/api/getUserInfo',
-    //     method: 'get'
-    // })
+export function getUserInfo() {
+    return request({
+        url: '/api/getUserInfo',
+        method: 'get'
+    })
 }
+
