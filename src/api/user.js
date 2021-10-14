@@ -24,3 +24,16 @@ export function userInfo() {
     //     method: 'get'
     // })
 }
+
+export function changeRole() {
+    return request({
+        url: '/api/changeRole',
+        method: 'post',
+        data: {
+            role: 'Creator'
+        }
+    })
+}
+
+
+

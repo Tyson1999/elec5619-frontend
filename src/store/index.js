@@ -13,7 +13,7 @@ export default createStore({
       state.role = user['role']
       state.avatar = user['avatar']
       state.email = user['email']
-    }
+    },
   },
   actions: {
   }
