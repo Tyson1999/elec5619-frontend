@@ -22,7 +22,7 @@ service.interceptors.request.use(
     },
     error => {
         // do something with request error
-        console.log(error)
+        console.log({error})
         return Promise.reject(error)
     }
 )
@@ -31,6 +31,10 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     response => {
         const res = response.data
+        // check if the url associates with captcha
+        if (response.config.url.indexOf('/api/startCaptcha') != -1){
+            return res
+        }
         if (res.code == 0) {
             return res
         }
