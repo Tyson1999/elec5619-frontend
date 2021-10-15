@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     ...mapState({
-      isLogin: state => state.email != ''
+      isLogin: state => state.avatar != ''
     })
   },
   watch: {
