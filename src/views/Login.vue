@@ -62,7 +62,7 @@ export default {
           .then(res => {
             ElMessage.success(res['msg'])
             setToken(res['token'])
-            this.$router.go(0);
+            this.$router.push('/')
           })
           .catch(err => console.log({err}))
           .finally(() => this.loading = false)

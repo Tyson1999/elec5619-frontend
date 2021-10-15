@@ -6,7 +6,7 @@
             <a href="javascript:history.go(-1)">
               <el-button type="primary" class="back" round>Back</el-button>
             </a>
-            <el-button type="text" class="logout" @click="Logout()" v-show="displayUser">{{greeting}}</el-button>
+            <el-button type="text" class="logout" @click="Logout()" v-show="displayUser">Hi {{username}}</el-button>
           </div>
           <span class="dot">   
             <el-upload
@@ -23,13 +23,13 @@
           </span>
           <el-form ref="form" :model="form" label-width="120px" class="autoFilled">
             <el-form-item label="Username">
-              <el-input  placeholder="Username" v-model="form.name"></el-input>
+              <el-input  placeholder="Username" v-model="username"></el-input>
             </el-form-item>
             <el-form-item label="Password">
-              <el-input placeholder="Password" v-model="form.oldPassword" show-password></el-input>
+              <el-input placeholder="Password" v-model="oldPassword" show-password></el-input>
             </el-form-item>
             <el-form-item label=" New Password">
-              <el-input placeholder="New Password" v-model="form.newPassword" show-password></el-input>
+              <el-input placeholder="New Password" v-model="newPassword" show-password></el-input>
             </el-form-item>
               <el-button type="primary" @click="Submit()" class="submit">Submit</el-button>
           </el-form> 
@@ -167,17 +167,16 @@
 </template>
 
 <script>
+import {changeNameAndPassword} from '@/api/user'
+import { mapState } from 'vuex';
+import { ElMessage } from 'element-plus'
 
 export default {
     name:'UserProfile',
     data() {
-        return { 
-          greeting:'Hi, username',      
-          form: {
-            name: '',
-            oldPassword:'',
-            newPassword: '',
-          },
+        return {  
+          oldPassword:'',
+          newPassword: '',
           fileList: [],
           displayUser:true,
           displayOption:false,
@@ -199,17 +198,45 @@ export default {
           
         }
     },
-    created(){
-      this.userInfo();
-    },
     
     methods: {
       Submit() {
-        console.log('submitted');
-      },
+        const username = this.username
+        const password = this.newPassword
+      // if (password != retype_password){
+      //   ElMessage.error("Two passwords don't match")
+      //   return;
+      // }
+      // if (email == '' || password == '' || username == '' || retype_password == ''){
+      //   ElMessage.error("Please fill in the form")
+      //   return;
+      // }
+        changeNameAndPassword({username,password})
+          .then(res => {
+            ElMessage.success(res.msg)
+          })
+          .catch(err => {
+            console.log({err})
+          })
+          //   console.log({err})
+          // .then(() => {
+          //   ElMessage.success("Register successfully, you'll be jumped to the login page soon")
+          //   this.clearForm()
+          //   setTimeout(() => {
+          //     this.$router.push('/login')
+          //   }, 1500)
+          // })
+          // .catch(err => {
+          //   console.log({err})
+          //   this.clearForm()
+          // })
+    },
+  
 
-      userInfo() {
-      },
+
+      // Submit() {
+      //   console.log('submitted');
+      // },
 
       Logout(){
         this.displayUser=false;
@@ -255,15 +282,16 @@ export default {
         this.$router.push('NewPost')
 
       },
-
       Confirm(){
         this.displayOption=false;
         this.displayConfirm=false;
       }
-      
+    },
 
-     
-
+    computed: {
+      ...mapState({
+        username: state => state.username
+      })
     }
     
 }
