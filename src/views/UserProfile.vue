@@ -26,10 +26,10 @@
               <el-input  placeholder="Username" v-model="username"></el-input>
             </el-form-item>
             <el-form-item label="Password">
-              <el-input placeholder="Password" v-model="oldPassword" show-password></el-input>
+              <el-input placeholder="Password" v-model="newPassword" show-password></el-input>
             </el-form-item>
             <el-form-item label=" New Password">
-              <el-input placeholder="New Password" v-model="newPassword" show-password></el-input>
+              <el-input placeholder="New Password" v-model="retypePassword" show-password></el-input>
             </el-form-item>
               <el-button type="primary" @click="Submit()" class="submit">Submit</el-button>
           </el-form> 
@@ -175,8 +175,8 @@ export default {
     name:'UserProfile',
     data() {
         return {  
-          oldPassword:'',
-          newPassword: '',
+          newPassword:'',
+          retypePassword: '',
           fileList: [],
           displayUser:true,
           displayOption:false,
@@ -203,14 +203,20 @@ export default {
       Submit() {
         const username = this.username
         const password = this.newPassword
-      // if (password != retype_password){
-      //   ElMessage.error("Two passwords don't match")
-      //   return;
-      // }
-      // if (email == '' || password == '' || username == '' || retype_password == ''){
-      //   ElMessage.error("Please fill in the form")
-      //   return;
-      // }
+        const retype_password = this.retypePassword
+
+        if (password == '' || retype_password == ''){
+          ElMessage.error("Please fill in the form")
+          return;
+        }
+
+        if (password != this.retype_password){
+          ElMessage.error("Two passwords don't match")
+          console.log("1",password)
+          console.log("2",retype_password)
+          return;
+        }
+        
         changeNameAndPassword({username,password})
           .then(res => {
             ElMessage.success(res.msg)

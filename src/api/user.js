@@ -41,5 +41,19 @@ export function changeNameAndPassword(user) {
     })
 }
 
+export function getFavouriteList() {
+    return request({
+        url: '/api/getFavouriteList',
+        method: 'get',
+    })
+}
+
+export function getSubscribeList() {
+    return request({
+        url: '/api/getSubscribeList',
+        method: 'get',
+    })
+}
+
 
 
