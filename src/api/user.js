@@ -1,3 +1,4 @@
+// import axios from 'axios'
 import request from '../utils/request'
 
 export function login(user) {
@@ -22,4 +23,24 @@ export function getUserInfo() {
         method: 'get'
     })
 }
+
+export function changeRole() {
+    return request({
+        url: '/api/changeRole',
+        method: 'post',
+        data: {
+            role: 'Creator'
+        }
+    })
+}
+
+export function changeNameAndPassword(user) {
+    return request({
+        url: '/api/changeNameAndPassword',
+        method: 'post',
+        data: user
+    })
+}
+
+
 

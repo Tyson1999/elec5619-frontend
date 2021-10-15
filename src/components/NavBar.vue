@@ -53,7 +53,7 @@ export default {
   watch: {
     navBarType(to) {
       console.log(to)
-    }
+    },
   }
 }
 </script>
