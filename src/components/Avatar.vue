@@ -17,33 +17,47 @@
     </div>
     <div class="personal-list" v-if="hover">
       <div><a href="/userprofile">Personal setting</a></div>
-      <div><a @click="beCreator">Become creator</a></div>
+      <div><a @click="changeRole">Become {{role}}</a></div>
       <div><a @click="logout">Log out</a></div>
     </div>
   </div>
 </template>
 
 <script>
+import {ElMessage} from 'element-plus'
 import {changeRole} from '@/api/user'
+import {removeToken} from '@/utils/auth'
 
 export default {
   name: 'Avatar',
   data() {
     return {
-      avatar: 'https://s.pximg.net/common/images/no_profile_s.png',
       hover: false
     }
   },
   methods: {
-    beCreator() {
+    changeRole() {
       changeRole()
+        .then(res => {
+          ElMessage.success(res['msg'])
+          this.$store.dispatch('getUserInfo')
+        })
         .catch(err => {
           console.log({err})
         })
-      console.log('111')
     },
     logout() {
-      console.log('111')
+      removeToken()
+      this.$router.push('/')
+      this.$router.go(0)
+    }
+  },
+  computed: {
+    role() {
+      return this.$store.state.role == 'user' ? 'creator' : 'user'
+    },
+    avatar() {
+      return this.$store.state.avatar
     }
   }
 }

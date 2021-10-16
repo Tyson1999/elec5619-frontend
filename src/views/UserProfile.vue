@@ -1,33 +1,31 @@
 <template v-slot="tip" class="el-upload__tip">
   <div class="container">
-      <el-tabs type="border-card" class="borderCard">
+      <el-tabs type="border-card" class="borderCard" @tab-click="tabClicked">
         <!-- Account Setting -->
         <el-tab-pane label="Account Setting" class="account">
           <div class="button">
             <el-button type="primary" class="back" @click="Back()" round>Back</el-button>
-            <el-button type="text" class="logout" @click="Logout()" v-show="displayUser">Hi {{username}}</el-button>
+            <el-button type="text" class="logout" v-show="displayUser">Hi {{username}}</el-button>
           </div>
-          <span class="dot">
-            <el-upload
-              class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :file-list="fileList"
-              list-type="picture">
-              <span class="dot" @click="selectImg()">
-              <p>Add Profile Picture</p>
-              </span>
-            </el-upload>
-          </span>
-          <el-form ref="form" :model="form" label-width="120px" class="autoFilled">
+          <el-upload
+            class="upload"
+            :auto-upload="false"
+            :on-exceed="handleExceed"
+            :on-change="onUploadChange"
+            :show-file-list="false"
+            list-type="picture">
+            <span class="dot" :style="{backgroundImage: 'url(' + avatar + ')'}">
+            <p style="font-weight: bold; font-size: 50px; color: #000">+</p>
+            </span>
+          </el-upload>
+          <el-form ref="form" label-width="120px" class="autoFilled" style="margin-top: 10px">
             <el-form-item label="Username">
               <el-input  placeholder="Username" v-model="username"></el-input>
             </el-form-item>
             <el-form-item label="Password">
               <el-input placeholder="Password" v-model="newPassword" show-password></el-input>
             </el-form-item>
-            <el-form-item label=" New Password">
+            <el-form-item label="New Password">
               <el-input placeholder="New Password" v-model="retypePassword" show-password></el-input>
             </el-form-item>
               <el-button type="primary" @click="Submit()" class="submit">Submit</el-button>
@@ -49,9 +47,7 @@
         <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
           <SupportLevel :elements="SupportLevel" />
         </el-tab-pane>
-        <el-tab-pane label="New Post" class="creation" v-if="isCreator">
-          <SupportLevel :elements="SupportLevel" />
-        </el-tab-pane>
+        <el-tab-pane label="New Post" class="creation" v-if="isCreator" />
       </el-tabs>
   </div>
 </template>
@@ -61,7 +57,7 @@ import List from '@/components/List'
 import SupportLevel from '@/components/SupportLevel'
 import { mapState } from 'vuex'
 import { ElMessage } from 'element-plus'
-import {changeNameAndPassword} from '@/api/user'
+import { changeNameAndPassword, addProfilePicture } from '@/api/user'
 
 export default {
   name:'UserProfile',
@@ -125,12 +121,12 @@ export default {
       const password = this.newPassword
       const retype_password = this.retypePassword
 
-      if (password == '' || retype_password == ''){
+      if (password === '' || retype_password === ''){
         ElMessage.error("Please fill in the form")
         return;
       }
 
-      if (password != this.retype_password){
+      if (password !== retype_password){
         ElMessage.error("Two passwords don't match")
         console.log("1",password)
         console.log("2",retype_password)
@@ -144,15 +140,6 @@ export default {
         .catch(err => {
           console.log({err})
         })
-  },
-
-    Logout(){
-      this.displayUser=false;
-      console.log(1);
-    },
-
-    selectImg(){
-      console.log(1);
     },
 
     setImage (output) {
@@ -162,11 +149,22 @@ export default {
     console.log("Exif", output.exif);
     },
 
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleExceed() {
+      ElMessage.error("You can upload 1 image file at max")
     },
-    handlePreview(file) {
-      console.log(file);
+    onUploadChange(file) {
+      const formData = new FormData()
+      formData.append("file", file.raw)
+      addProfilePicture(formData)
+          .then(res => {
+            ElMessage.success(res['msg'])
+            setTimeout(() => {
+              this.$router.go(0)
+            }, 1500)
+          })
+          .catch(err => {
+            ElMessage.error(err['message'])
+          })
     },
 
     Back() {
@@ -182,13 +180,19 @@ export default {
         this.displayOption=true;
         this.displayConfirm=true;
       }
+    },
+    tabClicked(p) {
+      if (p['props']['label'] == 'New Post'){
+        this.$router.push('/newPost')
+      }
     }
   },
 
   computed: {
     ...mapState({
       username: state => state.username,
-      isCreator: state => state.role === 'creator'
+      isCreator: state => state.role === 'creator',
+      avatar: state => state.avatar
     })
   }
 }
@@ -218,12 +222,14 @@ export default {
 .account {
   height: 500px;
 }
+
 .account .dot {
+  background: center / contain no-repeat;
   height: 100px;
   width: 100px;
-  background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
+
 }
 
 .subscribe .dot {
@@ -233,6 +239,7 @@ export default {
   border-radius: 50%;
   display: inline-block;
 }
+
 .dot p {
    margin-top: 30px;
    cursor: pointer;
