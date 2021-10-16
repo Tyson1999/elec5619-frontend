@@ -7,7 +7,10 @@ import Plan from '@/views/Plan'
 import UserProfile from '@/views/UserProfile'
 import NotFound from '@/views/404'
 import SearchCreator from '@/views/SearchCreator'
+<<<<<<< HEAD
 import About from '@/views/About'
+=======
+>>>>>>> ad83af11c1496c8c93e8bf589cda5dcfffbbf881
 
 const routes = [
   {
@@ -67,6 +70,7 @@ const routes = [
         name: '404',
         component: NotFound
   },
+<<<<<<< HEAD
   
   {
        path:'/About',
@@ -75,6 +79,8 @@ const routes = [
   },
   
 
+=======
+>>>>>>> ad83af11c1496c8c93e8bf589cda5dcfffbbf881
   {    // Default router, return 404
         path: '/:catchAll(.*)',
         name: 'Default',
