@@ -51,7 +51,7 @@ router.beforeEach(async(to, from, next) => {
         } else {
             ElNotification.error({
                 title: "Error",
-                message: "You need to log in firstly before enter this page"
+                message: "You need to login firstly before enter this page"
             })
             next(`/login`)
             NProgress.done()

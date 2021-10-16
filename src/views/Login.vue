@@ -6,15 +6,16 @@
     <div class="login-form">
       <el-input v-model="email" placeholder="Email address" class="login-input" />
       <el-input v-model="password" placeholder="Password" class="login-input" type="password" />
-      <el-button type="primary" class="login-button" @click="login()">Login</el-button>
+      <Geetest @validate_success="validate_success" />
+      <el-button type="primary" class="login-button" @click="login">Login</el-button>
       <div class="forget-password">
         <a href="#" class="forget-password">Forgot password?</a>
       </div>
-      <div class="social-login">
-        <el-button class="login-button">Continue with Google</el-button>
-        <el-button class="login-button">Continue with Facebook</el-button>
-        <el-button class="login-button">Continue with Twitter</el-button>
-      </div>
+<!--      <div class="social-login">-->
+<!--        <el-button class="login-button">Continue with Google</el-button>-->
+<!--        <el-button class="login-button">Continue with Facebook</el-button>-->
+<!--        <el-button class="login-button">Continue with Twitter</el-button>-->
+<!--      </div>-->
       <el-divider></el-divider>
       <div class="policy">
         You agree to follow our <a href="#"> Privacy Policy </a> and <a href="#"> Terms of Service </a> when login.
@@ -28,16 +29,21 @@
 import {oneWord} from '@/api/index'
 import {login} from '@/api/user'
 import {setToken} from '@/utils/auth'
-import { ElMessage } from "element-plus";
+import Geetest from '@/components/Geetest'
+import { ElMessage } from "element-plus"
 
 export default {
   name: 'Login',
+  components: {
+    Geetest
+  },
   data() {
     return {
       email: '',
       password: '',
       one_word: '',
-      loading: false
+      loading: false,
+      captcha_res: ''
     }
   },
   created() {
@@ -54,11 +60,18 @@ export default {
       this.loading = true
       const email = this.email
       const password = this.password
+      const captcha_res = this.captcha_res
       if (email == '' || password == ''){
         ElMessage.error("Please enter your email and password")
+        this.loading = false
         return;
       }
-      login({email, password})
+      if (captcha_res == ''){
+        ElMessage.error("Please complete the captcha")
+        this.loading = false
+        return;
+      }
+      login({email, password, captcha_res})
           .then(res => {
             ElMessage.success(res['msg'])
             setToken(res['token'])
@@ -66,6 +79,9 @@ export default {
           })
           .catch(err => console.log({err}))
           .finally(() => this.loading = false)
+    },
+    validate_success(res) {
+      this.captcha_res = res
     }
   }
 }
@@ -116,7 +132,6 @@ export default {
   height: 40px;
   border-radius: 30px;
   font-size: 16px;
-  margin-top: 10px;
 }
 
 .forget-password{
