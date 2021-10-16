@@ -46,23 +46,23 @@
           <List :elements="Artists" />
         </el-tab-pane>
         <!-- Support level -->
-        <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
-          <List :elements="SupportLevel" />
+        <el-tab-pane label="My Support Level" class="creation" v-if="!isCreator">
+          <SupportLevel :elements="SupportLevel" />
         </el-tab-pane>
-
       </el-tabs>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { ElMessage } from 'element-plus'
 import List from '@/components/List'
+import SupportLevel from '@/components/SupportLevel'
+import { mapState } from 'vuex'
+import { ElMessage } from 'element-plus'
 import {changeNameAndPassword} from '@/api/user'
 
 export default {
   name:'UserProfile',
-  components: {List},
+  components: {List, SupportLevel},
   // loading data from backend
   created() {
     // load Fav list, Subs list
