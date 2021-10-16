@@ -55,4 +55,27 @@ export function getSubscribeList() {
     })
 }
 
+export function addProfilePicture() {
+    return request({
+        url: '/api/addProfilePicture',
+        method: 'post'
+    })
+}
+
+export function getCreatorInfo() {
+    return request({
+        url: '/api/getCreatorInfo',
+        method: 'get'
+    })
+}
+
+export function search(creator) {
+    return request({
+        url: '/api/search',
+        method: 'post',
+        data: creator
+        
+    })
+}
+
 

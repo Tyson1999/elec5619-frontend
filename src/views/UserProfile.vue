@@ -125,12 +125,12 @@ export default {
       const password = this.newPassword
       const retype_password = this.retypePassword
 
-      if (password == '' || retype_password == ''){
+      if (this.newPassword == '' || this.retype_password == ''){
         ElMessage.error("Please fill in the form")
         return;
       }
 
-      if (password != this.retype_password){
+      if (password != retype_password){
         ElMessage.error("Two passwords don't match")
         console.log("1",password)
         console.log("2",retype_password)
