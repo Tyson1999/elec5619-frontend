@@ -46,7 +46,10 @@
           <List :elements="Artists" />
         </el-tab-pane>
         <!-- Support level -->
-        <el-tab-pane label="My Support Level" class="creation" v-if="!isCreator">
+        <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
+          <SupportLevel :elements="SupportLevel" />
+        </el-tab-pane>
+        <el-tab-pane label="New Post" class="creation" v-if="isCreator">
           <SupportLevel :elements="SupportLevel" />
         </el-tab-pane>
       </el-tabs>
