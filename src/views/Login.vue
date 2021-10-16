@@ -61,7 +61,6 @@ export default {
       const email = this.email
       const password = this.password
       const captcha_res = this.captcha_res
-      debugger
       if (email == '' || password == ''){
         ElMessage.error("Please enter your email and password")
         this.loading = false

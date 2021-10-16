@@ -1,14 +1,13 @@
 <template v-slot="tip" class="el-upload__tip">
   <div class="container">
       <el-tabs type="border-card" class="borderCard">
+        <!-- Account Setting -->
         <el-tab-pane label="Account Setting" class="account">
           <div class="button">
-            <a href="javascript:history.go(-1)">
-              <el-button type="primary" class="back" round>Back</el-button>
-            </a>
+            <el-button type="primary" class="back" @click="Back()" round>Back</el-button>
             <el-button type="text" class="logout" @click="Logout()" v-show="displayUser">Hi {{username}}</el-button>
           </div>
-          <span class="dot">   
+          <span class="dot">
             <el-upload
               class="upload-demo"
               action="https://jsonplaceholder.typicode.com/posts/"
@@ -16,7 +15,7 @@
               :on-remove="handleRemove"
               :file-list="fileList"
               list-type="picture">
-              <span class="dot" @click="selectImg()">   
+              <span class="dot" @click="selectImg()">
               <p>Add Profile Picture</p>
               </span>
             </el-upload>
@@ -32,134 +31,23 @@
               <el-input placeholder="New Password" v-model="retypePassword" show-password></el-input>
             </el-form-item>
               <el-button type="primary" @click="Submit()" class="submit">Submit</el-button>
-          </el-form> 
+          </el-form>
         </el-tab-pane>
+        <!-- Favorite List -->
         <el-tab-pane label="Favorite List" class="favorite">
-          <div class="button">
-            <a href="javascript:history.go(-1)">
-              <el-button type="primary" class="back" @click="Back()" round>Back</el-button>
-            </a>
-            <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
-            <el-button type="text" class="edit" @click="Edit()">Edit</el-button>
-
-          </div>
-          <div class="block" v-for="artist in Artists" :key="artist">
-            <el-col :span="4" class="delete" v-show="displayOption">
-              <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
-            </el-col>
-            <el-col :span="20">
-              <el-card shadow="hover" class="favList">
-                <div class="row">
-                  <div class="column1">
-                    <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
-                  </div>
-                  <div class="column2">
-                    <h5>{{artist.name}}</h5>
-                    <p>{{artist.description}}</p>
-                  </div>
-                  <div class="column3">
-                    <el-carousel :interval="100000" type="card" height="200px">
-                      <el-carousel-item v-for="url in artist.urls" :key="url">
-                        <el-image
-                          style="width: 200px; height: 160px ; "
-                          :src="url"
-                          :fit="fill">
-                        </el-image>
-                      </el-carousel-item>
-                    </el-carousel>
-                  </div>
-                </div>        
-              </el-card>
-            </el-col>
-          </div>
-          <br><br>
-          <el-button type="success" plain v-show="displayConfirm" class="confirm" @click="Confirm()">Confirm</el-button>
-        </el-tab-pane>  
-        <el-tab-pane label="Subscribe List" class="subscribe">
-          <div class="button">
-            <a href="javascript:history.go(-1)">
-              <el-button type="primary" class="back"  round>Back</el-button>
-            </a>
-            <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
-            <el-button type="text" class="edit" @click="Edit()">Edit</el-button>
-
-          </div>
-          <div class="block" v-for="artist in Artists" :key="artist">
-            <el-col :span="4" class="delete" v-show="displayOption">
-              <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
-            </el-col>
-            <el-col :span="16">
-            <el-card shadow="hover" class="favList">
-              <div class="row">
-                <div class="column1">
-                  <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
-                </div>
-                <div class="column2">
-                  <h5>{{artist.name}}</h5>
-                  <p>{{artist.description}}</p>
-                </div>
-                <div class="column3">
-                  <el-carousel :interval="100000" type="card" height="200px">
-                    <el-carousel-item v-for="url in artist.urls" :key="url">
-                      <el-image
-                        style="width: 200px; height: 160px ; "
-                        :src="url"
-                        :fit="fill">
-                      </el-image>
-                    </el-carousel-item>
-                  </el-carousel>
-                </div>
-              </div>        
-            </el-card>
-          </el-col>
-          </div>
-          <br><br>
-          <el-button type="success" plain v-show="displayConfirm" class="confirm" @click="Confirm()">Confirm</el-button>
+          <List :elements="Artists" />
         </el-tab-pane>
-        <el-tab-pane label="My Creation List" class="creation" :disabled="isDisabled">
-          <div class="button">
-            <a href="javascript:history.go(-1)">
-              <el-button type="primary" class="back"  round>Back</el-button>
-            </a>
-            <el-button type="text" class="logout" @click="Logout()">{{greeting}}</el-button>
-            <el-button type="text" class="edit" @click="Edit()">Edit</el-button>
-
-          </div>
-          <div class="block" v-for="artist in Artists" :key="artist">
-            <el-col :span="4" class="delete" v-show="displayOption">
-              <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
-              <el-button type="primary" icon="el-icon-edit" circle @click="Modify(artist)"></el-button>
-
-            </el-col>
-            <el-col :span="16">
-            <el-card shadow="hover" class="favList">
-              <div class="row">
-                <div class="column1">
-                  <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
-                </div>
-                <div class="column2">
-                  <h5>{{artist.name}}</h5>
-                  <p>{{artist.description}}</p>
-                </div>
-                <div class="column3">
-                  <el-carousel :interval="100000" type="card" height="200px">
-                    <el-carousel-item v-for="url in artist.urls" :key="url">
-                      <el-image
-                        style="width: 200px; height: 160px ; "
-                        :src="url"
-                        :fit="fill">
-                      </el-image>
-                    </el-carousel-item>
-                  </el-carousel>
-                </div>
-              </div>        
-            </el-card>
-          </el-col>
-          </div>
-          <br><br>
-          <!-- <div class="confirm"> -->
-            <el-button type="success" class="confirm" plain  @click="Confirm()">Confirm</el-button>
-          <!-- </div> -->
+        <!-- Subscribe List -->
+        <el-tab-pane label="Subscribe List" class="subscribe">
+          <List :elements="Artists" />
+        </el-tab-pane>
+        <!-- Creation List -->
+        <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
+          <List :elements="Artists" />
+        </el-tab-pane>
+        <!-- Support level -->
+        <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
+          <List :elements="SupportLevel" />
         </el-tab-pane>
 
       </el-tabs>
@@ -167,139 +55,139 @@
 </template>
 
 <script>
-import {changeNameAndPassword} from '@/api/user'
 import { mapState } from 'vuex';
 import { ElMessage } from 'element-plus'
+import List from '@/components/List'
+import {changeNameAndPassword} from '@/api/user'
 
 export default {
-    name:'UserProfile',
-    data() {
-        return {  
-          newPassword:'',
-          retypePassword: '',
-          fileList: [],
-          displayUser:true,
-          displayOption:false,
-          displayConfirm:false,
-          isDisabled: true,
-          Artists: [{name: '吉田誠治',
-                  description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                  urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
-                  },
-                  {name: '吉田誠治',
-                  description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                  urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                  },
-                  {name: '吉田誠治',
-                  description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                  urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                  }],
-                    
-          
-        }
+  name:'UserProfile',
+  components: {List},
+  // loading data from backend
+  created() {
+    // load Fav list, Subs list
+    console.log()
+    // load my work and support level
+    // eslint-disable-next-line no-empty
+    if (this.isCreator){}
+  },
+  data() {
+      return {
+        newPassword:'',
+        retypePassword: '',
+        fileList: [],
+        displayUser:true,
+        displayOption:false,
+        displayConfirm:false,
+        Artists: [
+            {
+              name: '吉田誠治',
+              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
+
+            },
+            {
+              name: '吉田誠治',
+              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
+
+            },
+            {
+              name: '吉田誠治',
+              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
+              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
+            }
+        ],
+        SupportLevel: [
+          {
+            id: 1,
+            name: 'LATEST COMICS',
+            desc: 'You can see my comics for the last 2 months.',
+            price: '5.99',
+            cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
+          },
+          {
+            id: 2,
+            name: 'LATEST VIDEOS',
+            desc: 'You can see my videos for the last 2 months.',
+            price: '9.99',
+            cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
+          }
+        ]
+      }
+  },
+  methods: {
+    Submit() {
+      const username = this.username
+      const password = this.newPassword
+      const retype_password = this.retypePassword
+
+      if (password == '' || retype_password == ''){
+        ElMessage.error("Please fill in the form")
+        return;
+      }
+
+      if (password != this.retype_password){
+        ElMessage.error("Two passwords don't match")
+        console.log("1",password)
+        console.log("2",retype_password)
+        return;
+      }
+
+      changeNameAndPassword({username,password})
+        .then(res => {
+          ElMessage.success(res.msg)
+        })
+        .catch(err => {
+          console.log({err})
+        })
+  },
+
+    Logout(){
+      this.displayUser=false;
+      console.log(1);
     },
-    
-    methods: {
-      Submit() {
-        const username = this.username
-        const password = this.newPassword
-        const retype_password = this.retypePassword
 
-        if (password == '' || retype_password == ''){
-          ElMessage.error("Please fill in the form")
-          return;
-        }
-
-        if (password != this.retype_password){
-          ElMessage.error("Two passwords don't match")
-          console.log("1",password)
-          console.log("2",retype_password)
-          return;
-        }
-        
-        changeNameAndPassword({username,password})
-          .then(res => {
-            ElMessage.success(res.msg)
-          })
-          .catch(err => {
-            console.log({err})
-          })
-          //   console.log({err})
-          // .then(() => {
-          //   ElMessage.success("Register successfully, you'll be jumped to the login page soon")
-          //   this.clearForm()
-          //   setTimeout(() => {
-          //     this.$router.push('/login')
-          //   }, 1500)
-          // })
-          // .catch(err => {
-          //   console.log({err})
-          //   this.clearForm()
-          // })
+    selectImg(){
+      console.log(1);
     },
-  
 
-
-      // Submit() {
-      //   console.log('submitted');
-      // },
-
-      Logout(){
-        this.displayUser=false;
-        console.log(1);
-      },
-
-      selectImg(){
-        console.log(1);
-      },
-      setImage: function (output) {
-      this.hasImage = true;
-      this.image = output;
-      console.log("Info", output.info);
-      console.log("Exif", output.exif);
+    setImage (output) {
+    this.hasImage = true;
+    this.image = output;
+    console.log("Info", output.info);
+    console.log("Exif", output.exif);
     },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
 
-      Edit(){
-        if(this.displayOption == true){
-          this.displayOption=false;
-          this.displayConfirm=false;
-          this.isDisabled=true;
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
 
-        }else{
-          this.displayOption=true;
-          this.displayConfirm=true;
-          this.isDisabled=false;
+    Back() {
+      this.$router.go(-1)
+    },
 
-        }
-      },
-
-      Delete(artist){
-        console.log(artist)
-      },
-
-      Modify(artist){
-        console.log(artist)
-        this.$router.push('NewPost')
-
-      },
-      Confirm(){
+    Edit(){
+      if(this.displayOption == true){
         this.displayOption=false;
         this.displayConfirm=false;
-      }
-    },
 
-    computed: {
-      ...mapState({
-        username: state => state.username
-      })
+      }else{
+        this.displayOption=true;
+        this.displayConfirm=true;
+      }
     }
-    
+  },
+
+  computed: {
+    ...mapState({
+      username: state => state.username,
+      isCreator: state => state.role === 'creator'
+    })
+  }
 }
 </script>
 
@@ -330,8 +218,6 @@ export default {
 .account .dot {
   height: 100px;
   width: 100px;
-  margin-left: auto;
-  margin-right: auto;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
@@ -348,9 +234,14 @@ export default {
    margin-top: 30px;
    cursor: pointer;
 }
+
 .button {
+  margin: 0 20px;
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
+
 .button .logout {
     margin-left: auto;
 }
@@ -359,7 +250,7 @@ export default {
     /* margin-top: 40px; */
     margin-left: auto;
     margin-right: auto;
-    
+
 }
 .submit {
   margin-left: auto;
@@ -386,7 +277,7 @@ img {
   float: left;
   width: 20%;
   padding: 10px;
-  height: 180px; 
+  height: 180px;
   overflow: scroll;
 }
 .column2 p {
@@ -396,7 +287,7 @@ img {
 .column2 h5 {
   float:left;
   color: lightskyblue;
-  
+
 }
 .row:after {
   content: "";
@@ -408,8 +299,5 @@ img {
   margin-bottom: 10px;
 
 }
-
-
-
 
 </style>
