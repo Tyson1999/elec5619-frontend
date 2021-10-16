@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import {changeRole} from '@/api/user'
+
 export default {
   name: 'Avatar',
   data() {
@@ -34,6 +36,10 @@ export default {
   },
   methods: {
     beCreator() {
+      changeRole()
+        .catch(err => {
+          console.log({err})
+        })
       console.log('111')
     },
     logout() {
