@@ -126,7 +126,7 @@ export default {
         return;
       }
 
-      if (password !== retype_password){
+      if (password != retype_password){
         ElMessage.error("Two passwords don't match")
         console.log("1",password)
         console.log("2",retype_password)

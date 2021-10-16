@@ -7,7 +7,6 @@ import Plan from '@/views/Plan'
 import UserProfile from '@/views/UserProfile'
 import NotFound from '@/views/404'
 import SearchCreator from '@/views/SearchCreator'
-
 const routes = [
   {
         path: '/',

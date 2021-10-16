@@ -5,7 +5,13 @@
     <div v-if="!isLogin">
       <div class="function" v-if="navBarType === 'login'">
         <div class="search">
-          <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
+          <span class="a">
+            <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
+          </span>
+          <span class="a">
+            <el-button type="primary" @click="Search()" round>Search</el-button>
+          </span>
+
         </div>
         <a href="/login">
           <div class="login">
@@ -25,7 +31,14 @@
     <div v-else class="avatar">
       <Avatar />
       <div class="search">
-        <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search"></el-input>
+        <span class="a">
+          <el-input v-model="searchContent" placeholder="Search anything" prefix-icon="el-icon-search" ></el-input>
+        </span>
+        <span class="a">
+          <el-button type="primary" @click="Search()" round>Search</el-button>
+        </span>
+
+       
       </div>
     </div>
   </div>
@@ -34,6 +47,8 @@
 <script>
 import Avatar from './Avatar'
 import { mapState } from 'vuex'
+// import {search} from '@/api/user'
+
 export default {
   name: 'NavBar',
   components: {
@@ -45,6 +60,16 @@ export default {
       searchContent: ''
     }
   },
+  methods: {
+    Search() {
+    const creator = this.searchContent
+    console.log(creator)
+    // search(creator)
+    //     .catch(err => {
+    //       console.log({err})
+    //     })
+    },
+  },
   computed: {
     ...mapState({
       isLogin: state => state.avatar != ''
@@ -54,7 +79,10 @@ export default {
     navBarType(to) {
       console.log(to)
     },
-  }
+  },
+  
+
+  
 }
 </script>
 
@@ -85,5 +113,10 @@ export default {
 
 .avatar {
   display: flex;
+}
+
+span.a {
+  display: inline-block; 
+ 
 }
 </style>

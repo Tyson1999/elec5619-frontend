@@ -1,11 +1,11 @@
 <template>
   <div class="footer-container">
     <div class="items">
-      <a href="#">What's Patronus</a>
-      <a href="#">FAQ</a>
-      <a href="#">TOS</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">About us</a>
+      <a href="http://localhost:8080">What's Patronus</a>
+      <a href="http://localhost:8080/faq.html">FAQ</a>
+      <a href="http://localhost:8080/tos.html">TOS</a>
+      <a href="http://localhost:8080/privacy.html">Privacy Policy</a>
+      <a href="http://localhost:8080/about.html">About us</a>
     </div>
   </div>
 </template>
