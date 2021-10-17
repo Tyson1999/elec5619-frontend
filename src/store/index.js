@@ -1,6 +1,5 @@
 import { createStore } from 'vuex'
 import {getUserInfo} from '@/api/user'
-import {getCreatorInfo} from '@/api/user'
 
 
 export default createStore({
@@ -9,6 +8,7 @@ export default createStore({
     username: '',
     role: '',
     avatar: '',
+    
     
 
   },
@@ -19,12 +19,11 @@ export default createStore({
       state.role = user['role']
       state.avatar = user['avatar']
     },
-    setCreator(state, creator){
-      state.email = creator['email']
-      state.username = creator['username']
-      state.role = creator['role']
-      state.avatar = creator['avatar']
-    }
+    // setCreator(state, creator){
+    //   state.username = creator['username']
+    //   state.description = creator['description']
+    //   state.profilePicStore = creator['profilePicStore']
+    // }
   },
   actions: {
     getUserInfo({commit}) {
@@ -48,25 +47,6 @@ export default createStore({
       })
     },
 
-    getCreatorInfo({commit}) {
-      return new Promise((resolve, reject) => {
-        getCreatorInfo()
-          .then(res => {
-              res = res['data']
-              const username = res['username']
-              const role = res['role']
-              const email = res['email']
-              const avatar = res['avatar']
-              commit('setCreator', {
-                username,
-                role,
-                email,
-                avatar
-              })
-              resolve(role)
-          })
-          .catch((err) => {reject(err)})
-      })
-    }
+    
   }
 })

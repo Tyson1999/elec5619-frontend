@@ -6,16 +6,20 @@
     <div class="title">
       <p>Suggested Artists</p>
     </div>
+    <NavBar @userInfo="userInfo"></NavBar>
+    <p>{{creatorList}}</p>
+
     <div class="block" v-for="artist in Top5Artists" :key="artist">
           <el-col :span="16">
             <el-card shadow="hover" class="artList">
               <div class="row">
                 <div class="column1">
-                  <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
+                  <!-- <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px"> -->
+                  <img src='"process.env.VUE_APP_BASE_API"+{{artist.user.profilePicStore}}'  style="width:80px">
                 </div>
                 <div class="column2">
-                  <h5>{{artist.name}}</h5>
-                  <p>{{artist.description}}</p>
+                  <h5>{{artist.user.username}}</h5>
+                  <p>{{artist.user.description}}</p>
                 </div>
                 <div class="column3">
                   <el-carousel :interval="100000" type="card" height="200px">
@@ -39,9 +43,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import NavBar from '@/components/NavBar.vue'
 
 export default {
     name:'UserProfile',
+    components: {
+      NavBar
+    },
     data() {
         return { 
          numArtists: 5,
@@ -81,17 +90,22 @@ export default {
                     description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
                     urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
                     }],
-                    newArt:[]
+                    newArt:[],
+                    creatorList:[]
 
         
         }
     },
-    created(){
-      this.userInfo();
+    beforeMount(){
+      this.userInfo()
     },
     computed:{
+      
       Top5Artists: function() {
-        return this.Artists.slice(0, this.numArtists);  
+        // return this.creatorList.slice(0, this.numArtists);  
+        return this.creatorList.slice(0, 2);  
+
+        // console.log(this.creatorList.slice(0,5)
       },
       
       
@@ -103,6 +117,8 @@ export default {
       },
 
       userInfo() {
+        this.creatorList = JSON.parse(this.$route.params.name);
+        console.log(this.creatorList[0].user.profilePicStore)
       },
 
       Logout(){
@@ -113,6 +129,12 @@ export default {
       selectImg(){
         console.log(1);
       },
+
+      computed: {
+    ...mapState({
+      description: state => state.description,
+    })
+  }
 
       
 

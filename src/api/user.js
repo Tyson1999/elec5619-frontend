@@ -69,11 +69,13 @@ export function getCreatorInfo() {
     })
 }
 
-export function search(creator) {
+export function searchName(creator) {
     return request({
-        url: '/api/search',
+        url: '/api/searchName',
         method: 'post',
-        data: creator
+        params:{
+            name:creator
+        }
         
     })
 }
