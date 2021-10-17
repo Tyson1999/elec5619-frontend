@@ -14,3 +14,11 @@ export function addPost(data) {
         data
     })
 }
+
+export function getArtifactById(userId) {
+    return request({
+        url: '/api/getAllArtifactById',
+        method: 'get',
+        params: userId
+    })
+}

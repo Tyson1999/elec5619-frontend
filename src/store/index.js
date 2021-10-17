@@ -9,8 +9,6 @@ export default createStore({
     username: '',
     role: '',
     avatar: '',
-    
-
   },
   mutations: {
     setUser(state, user){

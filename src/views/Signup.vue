@@ -87,12 +87,12 @@ export default {
   top: 0;
   bottom: 0;
   z-index: -1;
-  background: #aaa;
+  background: url('~@/assets/background.jpeg') center / contain no-repeat;
 }
 
 .login-form-container {
   text-align: center;
-  background-color: hsla(0, 0%, 100%, .92);
+  background-color: hsla(0, 0%, 85%, .92);
   width: 363px;
   border-radius: 10px;
   padding: 20px 0 40px 0;
