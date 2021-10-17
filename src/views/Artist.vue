@@ -1,26 +1,24 @@
 <template>
   <div class="banner">
-    <div class="banner-image" style="background-image: url('https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/20390859/cover/nSPjsQ2jd5T5Yzq1oaMqNT3m.jpeg')">
-<!--      <div class="banner-image-cover"></div>-->
-    </div>
+    <div class="banner-image" />
   </div>
   <div class="artist">
-    <div class="avatar"></div>
+    <div class="avatar" :style="{backgroundImage: 'url(' + avatar + ')'}"></div>
     <div class="name">{{name}}</div>
-    <el-button type="primary" round icon="el-icon-check" v-if="follow">Following</el-button>
-    <el-button type="info" round icon="el-icon-plus" v-else>Follow now</el-button>
+    <el-button type="primary" round icon="el-icon-check" v-if="follow" @click="unfollowCreator">Following</el-button>
+    <el-button type="info" round icon="el-icon-plus" v-else @click="followCreator">Follow now</el-button>
   </div>
   <div style="background: #eee; padding-top: 30px;">
     <div class="content-container">
-      <div class="posts">
+      <div class="posts" v-if="posts">
         <div v-for="post in posts" :key="post" class="post">
-          <div class="post-image" :style="{backgroundImage: 'url(' + post['cover'] + ')'}"></div>
+          <div class="post-image" :style="{backgroundImage: 'url(' + checkIsImage(post['store_location']) + ')'}"></div>
           <div class="post-meta">
-            <div class="post-date">{{post['date']}}</div>
-            <div class="post-privilege">{{post['privilege']}}</div>
+            <div class="post-date">{{post['category_name']}}</div>
+            <div class="post-privilege">{{'Public to everyone'}}</div>
           </div>
           <div class="post-title">{{post['title']}}</div>
-          <div class="post-desc">{{interceptOverflow(post['desc'])}}</div>
+          <div class="post-desc">{{interceptOverflow(post['description'])}}</div>
         </div>
       </div>
       <div class="support-levels">
@@ -41,32 +39,18 @@
   </div>
 </template>
 <script>
+import {ElMessage} from 'element-plus'
+import {getArtifactById} from '@/api/work'
+import {getCreatorInfo, followCreator, unfollowCreator} from '@/api/creator'
 export default {
   name: 'Artist',
   data() {
     return {
+      creatorId: this.$route.params,
       avatar: '',
-      name: 'pixivFANBOX公式',
+      name: '',
       follow: false,
-      posts: [{
-        id: 1,
-        cover: 'https://pixiv.pximg.net/c/1200x630_90_a2_g5/fanbox/public/images/post/2746159/cover/JC6wXaAIgAMBZhiDtCNOjrP8.jpeg',
-        title: '過去の投稿が探しやすくなるよう、投稿一覧ページをアップデートしました',
-        date: '2021/09/21 17:00',
-        privilege: 'Public to everyone',
-        desc: 'いつもFANBOXをご利用いただきありがとうございます。\n' +
-            'FANBOXはサービス開始以来、たくさんのクリエイターのみなさまに継続してご利用いただいており、おかげさまで累計投稿数が150万件を突破いたしました！\n' +
-            'そしてこの度、日々公開される数多くの投稿の中から、自分の読みたいものが見つけやすくなるよう、投稿一覧ペー'
-        }, {
-        id: 2,
-        cover: 'https://pixiv.pximg.net/c/1200x630_90_a2_g5/fanbox/public/images/post/2746159/cover/JC6wXaAIgAMBZhiDtCNOjrP8.jpeg',
-        title: '過去の投稿が探しやすくなるよう、投稿一覧ページをアップデートしました',
-        date: '2021/09/21 17:00',
-        privilege: 'Public to everyone',
-        desc: 'いつもFANBOXをご利用いただきありがとうございます。\n' +
-            'FANBOXはサービス開始以来、たくさんのクリエイターのみなさまに継続してご利用いただいており、おかげさまで累計投稿数が150万件を突破いたしました！\n' +
-            'そしてこの度、日々公開される数多くの投稿の中から、自分の読みたいものが見つけやすくなるよう、投稿一覧ペー'
-      }],
+      posts: [],
       levels: [{
         id: 1,
         cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg',
@@ -82,9 +66,23 @@ export default {
       }]
     }
   },
-  mounted() {
+  created() {
     // Obtain user id, and request the related data from backend
-    console.log(this.$route.params)
+    getArtifactById(this.creatorId)
+        .then(res => {
+          this.posts = res['data']
+        })
+        .catch(() => {
+          this.$router.push('/404')
+        })
+    getCreatorInfo(this.creatorId)
+        .then(res => {
+          res = res['data']
+          this.follow = res['favourite']
+          const user = res['user']
+          this.name = user['username']
+          this.avatar = process.env.VUE_APP_BASE_API + user['profilePicStore']
+        })
   },
   methods: {
     interceptOverflow(text) {
@@ -95,9 +93,31 @@ export default {
     },
     handlePrice(price) {
       return '<span style="font-size: 20px">$</span>' + price + '/month'
+    },
+    checkIsImage(url) {
+      const fileExtension = url.substring(url.lastIndexOf('.') + 1);
+      if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
+        return process.env.VUE_APP_BASE_API + url
+      } else {
+        return require('@/assets/no_cover.jpeg')
+      }
+    },
+    followCreator() {
+      followCreator(this.creatorId).then(res => {
+        ElMessage.success(res['msg'])
+        setTimeout(() => {
+          this.$router.go(0)
+        }, 1000)
+      })
+    },
+    unfollowCreator() {
+      unfollowCreator(this.creatorId).then(res => {
+        ElMessage.success(res['msg'])
+        setTimeout(() => {
+          this.$router.go(0)
+        }, 1000)
+      })
     }
-  },
-  filters: {
   }
 }
 </script>
@@ -109,23 +129,11 @@ export default {
 }
 
 .banner-image {
-  /*https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/20390859/cover/nSPjsQ2jd5T5Yzq1oaMqNT3m.jpeg*/
-  height: 370px;
-  background: center / cover no-repeat #eee;
+  height: 450px;
+  background: url('~@/assets/artist-banner-default.jpeg') center / cover no-repeat #eee;
   position: relative;
   z-index: 0;
 }
-
-/*.banner-image-cover {*/
-/*  position:absolute;*/
-/*  left:10px;*/
-/*  right:10px;*/
-/*  top: 0;*/
-/*  height: 100%;*/
-/*  z-index: 1;*/
-/*  background: #eee;*/
-/*  opacity: .9;*/
-/*}*/
 
 .artist {
   margin: -15px auto 15px auto;
@@ -137,7 +145,7 @@ export default {
 }
 
 .artist .avatar {
-  background: center / cover no-repeat url('https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/20390859/icon/ZYMvxFOQp6LyH9nv0luZdH5s.jpeg');
+  background: center / cover no-repeat;
   width: 100px;
   height: 100px;
   margin-right: 15px;

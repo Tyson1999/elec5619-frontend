@@ -70,9 +70,10 @@ export default {
         .then(res => {
           // console.log(res.data)
           // console.log(res.data[0])
-          // console.log(res.data[0][0].user.username)
+          console.log(res.data[0][0].user.username)
+          console.log(res.data[1][0].user.username)
           // this.creatorList = res.data;
-          this.creatorList = JSON.stringify(res.data[0])
+          this.creatorList = JSON.stringify(res.data)
           this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
           })
           .catch(err => {

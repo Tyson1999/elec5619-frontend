@@ -34,7 +34,7 @@ export default createStore({
               const username = res['username']
               const role = res['role']
               const email = res['email']
-              const avatar = res['avatar']
+              const avatar = process.env.VUE_APP_BASE_API + res['avatar']
               commit('setUser', {
                 username,
                 role,

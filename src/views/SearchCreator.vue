@@ -7,19 +7,17 @@
       <p>Suggested Artists</p>
     </div>
     <NavBar @userInfo="userInfo"></NavBar>
-    <p>{{creatorList}}</p>
 
     <div class="block" v-for="artist in Top5Artists" :key="artist">
           <el-col :span="16">
             <el-card shadow="hover" class="artList">
               <div class="row">
                 <div class="column1">
-                  <!-- <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px"> -->
-                  <img src='"process.env.VUE_APP_BASE_API"+{{artist.user.profilePicStore}}'  style="width:80px">
+                  <img src= "process.env.VUE_APP_BASE_API+{{artist.user.profilePicStore}}" style="width:80px">
                 </div>
                 <div class="column2">
-                  <h5>{{artist.user.username}}</h5>
-                  <p>{{artist.user.description}}</p>
+                  <h5>{{artist[0].user.username}}</h5>
+                  <p>{{artist[0].user.description}}</p>
                 </div>
                 <div class="column3">
                   <el-carousel :interval="100000" type="card" height="200px">
@@ -102,8 +100,8 @@ export default {
     computed:{
       
       Top5Artists: function() {
-        // return this.creatorList.slice(0, this.numArtists);  
-        return this.creatorList.slice(0, 2);  
+        return this.creatorList.slice(0, this.numArtists);  
+        // return this.creatorList.slice(0, 2);  
 
         // console.log(this.creatorList.slice(0,5)
       },
@@ -118,7 +116,10 @@ export default {
 
       userInfo() {
         this.creatorList = JSON.parse(this.$route.params.name);
-        console.log(this.creatorList[0].user.profilePicStore)
+        // console.log(this.creatorList[0].user.profilePicStore)
+        // console.log(this.creatorList)
+        console.log(this.creatorList.slice(0,2))
+
       },
 
       Logout(){
@@ -131,8 +132,8 @@ export default {
       },
 
       computed: {
-    ...mapState({
-      description: state => state.description,
+        ...mapState({
+        description: state => state.description,
     })
   }
 

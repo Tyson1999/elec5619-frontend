@@ -55,10 +55,11 @@ export function getSubscribeList() {
     })
 }
 
-export function addProfilePicture() {
+export function addProfilePicture(data) {
     return request({
         url: '/api/addProfilePicture',
-        method: 'post'
+        method: 'post',
+        data
     })
 }
 
