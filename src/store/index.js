@@ -8,9 +8,6 @@ export default createStore({
     username: '',
     role: '',
     avatar: '',
-    
-    
-
   },
   mutations: {
     setUser(state, user){
@@ -18,12 +15,7 @@ export default createStore({
       state.username = user['username']
       state.role = user['role']
       state.avatar = user['avatar']
-    },
-    // setCreator(state, creator){
-    //   state.username = creator['username']
-    //   state.description = creator['description']
-    //   state.profilePicStore = creator['profilePicStore']
-    // }
+    }
   },
   actions: {
     getUserInfo({commit}) {
@@ -47,6 +39,6 @@ export default createStore({
       })
     },
 
-    
+
   }
 })
