@@ -6,23 +6,25 @@
     <div class="title">
       <p>Suggested Artists</p>
     </div>
+
     <div class="block" v-for="artist in Top5Artists" :key="artist">
           <el-col :span="16">
             <el-card shadow="hover" class="artList">
               <div class="row">
                 <div class="column1">
-                  <img src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'  style="width:80px">
+                  <img :src= checkIsImage(artist[0].user.profilePicStore) style="width:80px">
                 </div>
                 <div class="column2">
-                  <h5>{{artist.name}}</h5>
-                  <p>{{artist.description}}</p>
+                  <router-link :to="'/artist/'+artist[0].user.id">{{artist[0].user.username}} 
+                  </router-link>
+                  <p>{{artist[0].user.description}}</p>
                 </div>
                 <div class="column3">
                   <el-carousel :interval="100000" type="card" height="200px">
-                    <el-carousel-item v-for="url in artist.urls" :key="url">
+                    <el-carousel-item v-for="artifact in artifacts" :key="artifact">
                       <el-image
-                        style="width: 200px; height: 160px ; "
-                        :src="url"
+                        style="width: 200px; height: 160px ;"
+                        :src= checkIsImage(artifact.url)
                         :fit="fill">
                       </el-image>
                     </el-carousel-item>
@@ -33,90 +35,89 @@
           </el-col>
       </div>
       <div class="showMore">
-        <el-button type="text" v-if="numArtists!=Artists.length" @click="numArtists = Artists.length">Show More Artists</el-button>
+        <el-button type="text" v-if="numArtists!=creatorList.length" @click="numArtists = creatorList.length">Show More Artists</el-button>
       </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import {getArtifactById} from '@/api/work'
 
 export default {
-    name:'UserProfile',
-    data() {
-        return { 
-         numArtists: 5,
-         Artists: [{name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    },
-                    {name: '吉田誠治',
-                    description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-                    urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-                    }],
-                    newArt:[]
+  name:'UserProfile',
+  components: {
+  },
+  data() {
+      return { 
+        numArtists: 2,
+        artifacts: [],
+        newArt:[],
+        creatorList:[],
+        id:''
 
-        
-        }
-    },
-    created(){
-      this.userInfo();
-    },
-    computed:{
-      Top5Artists: function() {
-        return this.Artists.slice(0, this.numArtists);  
-      },
-      
-      
+      }
+  },
+  beforeMount(){
+    this.userInfo()
+  },
+  computed:{
+    
+    Top5Artists: function() {
+      return this.creatorList.slice(0, this.numArtists);  
     },
     
-    methods: {
-      Submit() {
-        console.log('submitted');
-      },
+    
+  },
+    
+  methods: {
+    
+    
 
-      userInfo() {
-      },
+    userInfo() {
+      this.creatorList = JSON.parse(this.$route.params.name);
+      for (let i = 0;i < this.creatorList.length;i++){
+        const userId = {id:this.creatorList[i][0].user.id}
+        getArtifactById(userId)
+          .then(res => {
+            const urlPic = {"url":res.data[0].store_location}
+            this.artifacts.push(urlPic)
+          })
+          .catch(err => {
+          console.log(err)
+        })
+        
+      }
+      // console.log(this.artifacts)
+    },
 
-      Logout(){
-        this.displayUser=false;
-        console.log(1);
-      },
+    checkIsImage(url) {
+      const fileExtension = url.substring(url.lastIndexOf('.') + 1);
+      if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
+        return process.env.VUE_APP_BASE_API + url
+      } else {
+        return require('@/assets/no_cover.jpeg')
+      }
+    },
 
-      selectImg(){
-        console.log(1);
-      },
+    Logout(){
+      this.displayUser=false;
+      console.log(1);
+    },
+
+    selectImg(){
+      console.log(1);
+    },
+
+    computed: {
+      ...mapState({
+      description: state => state.description,
+      })
+    }
 
       
 
-    }
+  }
     
 }
 </script>

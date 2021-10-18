@@ -63,18 +63,15 @@ export function addProfilePicture(data) {
     })
 }
 
-export function getCreatorInfo() {
-    return request({
-        url: '/api/getCreatorInfo',
-        method: 'get'
-    })
-}
 
-export function search(creator) {
+export function searchName(creator) {
     return request({
-        url: '/api/search',
+        url: '/api/searchName',
         method: 'post',
-        data: creator
+        params:{
+            name:creator
+        }
+        
     })
 }
 

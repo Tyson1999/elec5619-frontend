@@ -1,7 +1,6 @@
 <template>
   <div class="nav-container">
     <div class="logo"></div>
-    <!-- User not login -->
     <div v-if="!isLogin">
       <div class="function" v-if="navBarType === 'login'">
         <div class="search">
@@ -36,6 +35,7 @@
         </span>
         <span class="a">
           <el-button type="primary" @click="Search()" round>Search</el-button>
+          <!-- <span>{{creatorList}}</span> -->
         </span>
 
        
@@ -47,7 +47,7 @@
 <script>
 import Avatar from './Avatar'
 import { mapState } from 'vuex'
-// import {search} from '@/api/user'
+import {searchName} from '@/api/user'
 
 export default {
   name: 'NavBar',
@@ -57,17 +57,26 @@ export default {
   props: ['navBarType'],
   data() {
     return {
-      searchContent: ''
+      searchContent: '',
+      creatorList:[] 
     }
   },
   methods: {
     Search() {
-    const creator = this.searchContent
-    console.log(creator)
-    // search(creator)
-    //     .catch(err => {
-    //       console.log({err})
-    //     })
+      const creator = this.searchContent
+      searchName(creator)
+        .then(res => {
+          // console.log(res.data)
+          // console.log(res.data[0])
+          // console.log(res.data[0][0].user.username)
+          // this.creatorList = res.data;
+          this.creatorList = JSON.stringify(res.data)
+          this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
+          })
+          .catch(err => {
+            console.log({err})
+          })
+        
     },
   },
   computed: {
@@ -88,7 +97,6 @@ export default {
 
 <style scoped>
 .nav-container{
-  /*background: antiquewhite;*/
   height: 64px;
   padding: 0px 16px;
   display: flex;
@@ -117,6 +125,7 @@ export default {
 
 span.a {
   display: inline-block; 
+  margin-left: 10px;
  
 }
 </style>
