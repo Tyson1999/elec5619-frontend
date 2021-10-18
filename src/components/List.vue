@@ -51,10 +51,6 @@ export default {
       required: true
     }
   },
-  // for test purpose
-  mounted() {
-    console.log(this.elements)
-  },
   data() {
     return {
       displayUser:true,

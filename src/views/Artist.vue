@@ -8,18 +8,26 @@
     <el-button type="primary" round icon="el-icon-check" v-if="follow" @click="unfollowCreator">Following</el-button>
     <el-button type="info" round icon="el-icon-plus" v-else @click="followCreator">Follow now</el-button>
   </div>
+  <Article
+      :show="showDetail"
+      :title="title"
+      :description="description"
+      @closeDrawer="closeDrawer"
+  />
   <div style="background: #eee; padding-top: 30px;">
     <div class="content-container">
       <div class="posts" v-if="posts">
-        <div v-for="post in posts" :key="post" class="post">
-          <div class="post-image" :style="{backgroundImage: 'url(' + checkIsImage(post['store_location']) + ')'}"></div>
-          <div class="post-meta">
-            <div class="post-date">{{post['category_name']}}</div>
-            <div class="post-privilege">{{'Public to everyone'}}</div>
+          <div v-for="post in posts" :key="post" class="post">
+            <a a href="javascript:;" style="text-decoration: none; color: #000" @click="checkArticleDetail(post)">
+              <div class="post-image" :style="{backgroundImage: 'url(' + checkIsImage(post['store_location']) + ')'}"></div>
+              <div class="post-meta">
+                <div class="post-date">{{post['category_name']}}</div>
+                <div class="post-privilege">{{'Public to everyone'}}</div>
+              </div>
+              <div class="post-title">{{post['title']}}</div>
+              <div class="post-desc">{{interceptOverflow(post['description'])}}</div>
+            </a>
           </div>
-          <div class="post-title">{{post['title']}}</div>
-          <div class="post-desc">{{interceptOverflow(post['description'])}}</div>
-        </div>
       </div>
       <div class="support-levels">
         <div v-if="levels.length > 0">
@@ -40,10 +48,12 @@
 </template>
 <script>
 import {ElMessage} from 'element-plus'
+import Article from '@/components/Article'
 import {getArtifactById} from '@/api/work'
 import {getCreatorInfo, followCreator, unfollowCreator} from '@/api/creator'
 export default {
   name: 'Artist',
+  components: {Article},
   data() {
     return {
       creatorId: this.$route.params,
@@ -63,7 +73,11 @@ export default {
         title: 'LATEST VIDEOS',
         desc: 'You can see my videos for the last 2 months.',
         price: '9.99'
-      }]
+      }],
+      /* Params to the Article.vue components */
+      showDetail: false,
+      title: '',
+      description: ''
     }
   },
   created() {
@@ -117,6 +131,14 @@ export default {
           this.$router.go(0)
         }, 1000)
       })
+    },
+    checkArticleDetail(post) {
+      this.title = post['title']
+      this.description = post['description']
+      this.showDetail = true
+    },
+    closeDrawer() {
+      this.showDetail = false
     }
   }
 }

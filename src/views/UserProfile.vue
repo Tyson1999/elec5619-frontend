@@ -53,11 +53,12 @@
 </template>
 
 <script>
-import List from '@/components/List'
-import SupportLevel from '@/components/SupportLevel'
 import { mapState } from 'vuex'
 import { ElMessage } from 'element-plus'
+import List from '@/components/List'
+import SupportLevel from '@/components/SupportLevel'
 import { changeNameAndPassword, addProfilePicture } from '@/api/user'
+
 
 export default {
   name:'UserProfile',
@@ -96,22 +97,6 @@ export default {
               description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
               urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
             }
-        ],
-        SupportLevel: [
-          {
-            id: 1,
-            name: 'LATEST COMICS',
-            desc: 'You can see my comics for the last 2 months.',
-            price: '5.99',
-            cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
-          },
-          {
-            id: 2,
-            name: 'LATEST VIDEOS',
-            desc: 'You can see my videos for the last 2 months.',
-            price: '9.99',
-            cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
-          }
         ]
       }
   },
