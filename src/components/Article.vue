@@ -1,38 +1,55 @@
 <template>
   <el-drawer
-      v-model="drawer"
-      title="I am the title"
-      :direction="direction"
+      v-model="show_drawer"
+      :title="title"
+      direction="rtl"
       :before-close="handleClose"
   >
-    <span>Hi, there!</span>
+    <div v-html="description"></div>
   </el-drawer>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script>
 import { ElMessageBox } from 'element-plus'
-
-export default defineComponent({
-  setup() {
-    const drawer = ref(false)
-    const direction = ref('rtl')
-    const handleClose = (done) => {
-      ElMessageBox.confirm('Are you sure you want to close this?')
-          .then(() => {
-            done()
-          })
-          .catch(() => {
-            // catch error
-          })
-    }
-    return {
-      drawer,
-      direction,
-      handleClose,
+export default {
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    description: {
+      type: String,
+      default: ''
     }
   },
-})
+  emits: ['closeDrawer'],
+  data() {
+    return {
+      show_drawer: false,
+    }
+  },
+  watch: {
+    show: {
+      immediate: true,
+      handler(val){
+        this.show_drawer = val
+      }
+    }
+  },
+  methods: {
+    handleClose() {
+       ElMessageBox.confirm('Are you sure you want to close this article?')
+           .then(() => {
+             this.$emit("closeDrawer")
+           })
+           .catch(() => {})
+     }
+  }
+}
 </script>
 
 <style scoped>

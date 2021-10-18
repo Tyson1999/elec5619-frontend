@@ -8,22 +8,16 @@ export default createStore({
     username: '',
     role: '',
     avatar: '',
-    
-    
-
+    id: ''
   },
   mutations: {
     setUser(state, user){
       state.email = user['email']
       state.username = user['username']
+      state.id = user['id']
       state.role = user['role']
       state.avatar = user['avatar']
-    },
-    // setCreator(state, creator){
-    //   state.username = creator['username']
-    //   state.description = creator['description']
-    //   state.profilePicStore = creator['profilePicStore']
-    // }
+    }
   },
   actions: {
     getUserInfo({commit}) {
@@ -34,12 +28,14 @@ export default createStore({
               const username = res['username']
               const role = res['role']
               const email = res['email']
+              const id = res['id']
               const avatar = process.env.VUE_APP_BASE_API + res['avatar']
               commit('setUser', {
                 username,
                 role,
                 email,
-                avatar
+                avatar,
+                id
               })
               resolve(role)
           })
@@ -47,6 +43,6 @@ export default createStore({
       })
     },
 
-    
+
   }
 })

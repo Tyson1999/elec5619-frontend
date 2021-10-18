@@ -2,38 +2,26 @@
   <div>
     <div class="button">
       <el-button type="primary" class="back" @click="Back()" round>Back</el-button>
-      <el-button type="primary" class="edit" @click="New()" round>New</el-button>
+      <el-button type="primary" class="edit" @click="Edit()" round>{{tableVisibility ? 'Edit' : 'New'}}</el-button>
     </div>
     <el-table
-        :data="elements"
+        v-if="tableVisibility"
         border
         style="width: 80%;
         margin: 30px auto;"
+        :data="SupportLevel"
         :header-cell-style="headClass"
         :cell-style="headClass"
     >
       <el-table-column prop="id" label="ID" width="100" />
-      <el-table-column prop="name" label="Name" width="180" />
+      <el-table-column prop="name" label="Name" width="250" />
       <el-table-column prop="desc" label="Description" width="500" />
       <el-table-column prop="price" label="Price" />
-      <el-table-column label="Operations">
-        <template #default="scope">
-          <el-button size="mini" @click="handleEdit(scope.row)">
-            Edit
-          </el-button>
-          <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete(scope.row)">
-            <template #reference>
-              <el-button
-                  size="mini"
-                  type="danger"
-              >
-                Delete
-              </el-button>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
     </el-table>
+
+    <div v-else style="font-size: 20px">
+      You haven't set up any support level yet.
+    </div>
 
     <!-- New SupportLevel Form -->
     <el-dialog title="Add new support level" v-model="dialogFormVisible">
@@ -46,23 +34,6 @@
         </el-form-item>
         <el-form-item label="Level price" required>
           <el-input v-model="form.price" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="Cover image" required>
-          <el-upload
-              class="upload-demo"
-              action=""
-              limit="1"
-              :on-exceed="handleExceed"
-              :on-change="handleChange"
-              :file-list="fileList"
-          >
-            <el-button size="small" type="primary">Click to upload</el-button>
-            <template #tip>
-              <div class="el-upload__tip">
-                jpg/png files with a size less than 500kb
-              </div>
-            </template>
-          </el-upload>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -79,32 +50,64 @@
 </template>
 
 <script>
-import {ElMessage} from 'element-plus'
+// import {ElMessage} from 'element-plus'
+import {getSubsType} from '@/api/supportLevel'
 export default {
   name: 'SupportLevel',
-  props: {
-    elements: {
-      type: Array,
-      required: true
-    }
+  created() {
+    getSubsType()
+        .then(res => {
+          if (res['msg'] == 'No such subscribe type information.'){
+            this.tableVisibility = false
+          } else {
+            this.tableVisibility = true
+            const support_detail = res['data']
+            this.SupportLevel[0]['price'] = support_detail['photo'] + ' per month'
+            this.SupportLevel[1]['price'] = support_detail['music'] + ' per month'
+            this.SupportLevel[2]['price'] = support_detail['art'] + ' per month'
+            // console.log(res)
+          }
+        })
   },
   data() {
     return {
       dialogFormVisible: false,
-      displayOption: false,
+      tableVisibility: false,
       form: {
         name: '',
         description: '',
         price: 0
       },
-      fileList: []
+      SupportLevel: [
+        {
+          id: 1,
+          name: 'PHOTOS',
+          desc: 'The supporter can see and download all the PHOTOS',
+          price: '$5.99 per month',
+          cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
+        },
+        {
+          id: 2,
+          name: 'MUSICS',
+          desc: 'The supporter can see and download all the MUSICS',
+          price: '$9.99 per month',
+          cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
+        },
+        {
+          id: 3,
+          name: 'ARTS',
+          desc: 'The supporter can see and download all the ARTS',
+          price: '$14.99 per month',
+          cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
+        }
+      ]
     }
   },
   methods: {
     Back() {
       this.$router.go(-1)
     },
-    New(){
+    Edit(){
       this.dialogFormVisible = true
     },
     handleEdit(row) {
@@ -112,16 +115,6 @@ export default {
       this.form['description'] = row['desc']
       this.form['price'] = row['price']
       this.dialogFormVisible = true
-    },
-    handleDelete(row) {
-      console.log(row['id'])
-    },
-    // hook function when select file or upload file success or upload file fail
-    handleChange() {
-
-    },
-    handleExceed() {
-      ElMessage.error("You can upload 1 image file at max")
     },
     headClass() {
       return "text-align:center"

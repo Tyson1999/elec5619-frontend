@@ -22,6 +22,7 @@
             <el-form-item label="Username">
               <el-input  placeholder="Username" v-model="username"></el-input>
             </el-form-item>
+            <p>{{id}}</p>
             <el-form-item label="Password">
               <el-input placeholder="Password" v-model="newPassword" show-password></el-input>
             </el-form-item>
@@ -33,13 +34,11 @@
         </el-tab-pane>
         <!-- Favorite List -->
         <el-tab-pane label="Favorite List" class="favorite">
-          <List :elements="Artists" />
+          <List :elements="subscribeList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Subscribe List -->
         <el-tab-pane label="Subscribe List" class="subscribe">
-          <!-- <List :elements="subscribeList" :artifacts="artifacts" /> -->
-          <List :elements="subscribeList"  />
-
+          <List :elements="subscribeList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Creation List -->
         <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
@@ -56,18 +55,18 @@
 
 <script>
 import List from '@/components/List'
-// import SupportLevel from '@/components/SupportLevel'
+import SupportLevel from '@/components/SupportLevel'
 import { mapState } from 'vuex'
 import { ElMessage } from 'element-plus'
-import { changeNameAndPassword, addProfilePicture, getSubscribeList } from '@/api/user'
-// import {getArtifactById} from '@/api/work'
+import { changeNameAndPassword, addProfilePicture, getSubscribeList, getFavouriteList } from '@/api/user'
+import {getArtifactById} from '@/api/work'
 
 
 export default {
   name:'UserProfile',
   components: {
     List, 
-    // SupportLevelList
+    SupportLevel
     },
   // loading data from backend
   created() {
@@ -88,41 +87,8 @@ export default {
         subscribeList:[],
         favoriteList:[],
         artifacts: [],
-        Artists: [
-            {
-              name: '吉田誠治',
-              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
-
-            },
-            {
-              name: '吉田誠治',
-              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-
-            },
-            {
-              name: '吉田誠治',
-              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-            }
-        ],
-        SupportLevel: [
-          {
-            id: 1,
-            name: 'LATEST COMICS',
-            desc: 'You can see my comics for the last 2 months.',
-            price: '5.99',
-            cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
-          },
-          {
-            id: 2,
-            name: 'LATEST VIDEOS',
-            desc: 'You can see my videos for the last 2 months.',
-            price: '9.99',
-            cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg'
-          }
-        ]
+        id:''
+        
       }
   },
   methods: {
@@ -202,20 +168,62 @@ export default {
           .then(res => {
             console.log(res.data);
             this.subscribeList = res.data
-            // console.log(this.subscribeList[0][0])
-      //       for (let i = 0;i < this.subscribeList.length;i++){
-      //         const userId = {id:this.subscribeList[i][0].user.id}
-      //         getArtifactById(userId)
-      //           .then(res => {
-      //             const urlPic = {"url":res.data[0].store_location}
-      //             this.artifacts.push(urlPic)
-      //           })
-      //           .catch(err => {
-      //           console.log(err)
-      //         })
+            for (let i = 0;i < this.subscribeList.length;i++){
+              const userId = {id:this.subscribeList[i][0].user.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
+                console.log(err)
+              })
         
-      // }
-            console.log("0",res.data[0][0].user.username)
+      }
+          })
+          .catch(err => {
+          console.log(err)
+      })
+      }
+      if (p['props']['label'] == 'Favorite List'){
+        getFavouriteList()
+          .then(res => {
+            this.subscribeList = res.data
+            for (let i = 0;i < this.subscribeList.length;i++){
+              const userId = {id:this.subscribeList[i][0].user.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
+                console.log(err)
+              })
+        
+      }
+            console.log("0",this.artifacts)
+          })
+          .catch(err => {
+          console.log(err)
+      })
+      }
+       if (p['props']['label'] == 'My Creation List'){
+        getFavouriteList()
+          .then(res => {
+            this.subscribeList = res.data
+            for (let i = 0;i < this.subscribeList.length;i++){
+              const userId = {id:this.subscribeList[i][0].user.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
+                console.log(err)
+              })
+        
+      }
+            console.log("0",this.artifacts)
           })
           .catch(err => {
           console.log(err)
@@ -224,20 +232,14 @@ export default {
 
     },
 
-    // checkIsImage(url) {
-    //   const fileExtension = url.substring(url.lastIndexOf('.') + 1);
-    //   if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
-    //     return process.env.VUE_APP_BASE_API + url
-    //   } else {
-    //     return require('@/assets/no_cover.jpeg')
-    //   }
-    // },
+    
   },
 
   computed: {
     ...mapState({
       username: state => state.username,
       isCreator: state => state.role === 'creator',
+      id: state => state.id,
       avatar: state => state.avatar
     })
   }
