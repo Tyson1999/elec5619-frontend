@@ -16,14 +16,16 @@
                    style="width:80px">
             </div>
             <div class="column2">
-              <h5>{{artist.name}}</h5>
-              <p>{{interceptOverflow(artist.description)}}</p>
+              <!-- <h5>{{artist[0].user.username}}</h5> -->
+              <h5>{{artist[0]}}</h5>
+
+              <!-- <p>{{interceptOverflow(artist[0].user.description)}}</p> -->
             </div>
             <div class="column3">
               <div class="image-container">
                 <el-image
-                    v-for="url in artist.urls.slice(0, 3)" :key="url"
-                    :src="url"
+                    v-for="artifact in artifacts" :key="artifact" 
+                    :src= checkIsImage(artifact.url)
                     fit="cover"
                 >
                 </el-image>
@@ -49,11 +51,14 @@ export default {
     elements: {
       type: Array,
       required: true
-    }
+    },
+    artifacts: [],
+    
+
   },
   // for test purpose
   mounted() {
-    console.log(this.elements)
+    // console.log(this.elements)
   },
   data() {
     return {
@@ -67,6 +72,7 @@ export default {
       this.$router.go(-1)
     },
     Edit(){
+      console.log("artid",this.artifacts)
       if(this.displayOption == true){
         this.displayOption=false;
         this.displayConfirm=false;
@@ -94,7 +100,15 @@ export default {
         return text.substr(0, 70) + '...'
       }
       return text
-    }
+    },
+    checkIsImage(url) {
+      const fileExtension = url.substring(url.lastIndexOf('.') + 1);
+      if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
+        return process.env.VUE_APP_BASE_API + url
+      } else {
+        return require('@/assets/no_cover.jpeg')
+      }
+    },
   }
 }
 </script>

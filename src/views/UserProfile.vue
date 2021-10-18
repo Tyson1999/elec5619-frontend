@@ -37,7 +37,9 @@
         </el-tab-pane>
         <!-- Subscribe List -->
         <el-tab-pane label="Subscribe List" class="subscribe">
-          <List :elements="Artists" />
+          <!-- <List :elements="subscribeList" :artifacts="artifacts" /> -->
+          <List :elements="subscribeList"  />
+
         </el-tab-pane>
         <!-- Creation List -->
         <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
@@ -54,14 +56,19 @@
 
 <script>
 import List from '@/components/List'
-import SupportLevel from '@/components/SupportLevel'
+// import SupportLevel from '@/components/SupportLevel'
 import { mapState } from 'vuex'
 import { ElMessage } from 'element-plus'
-import { changeNameAndPassword, addProfilePicture } from '@/api/user'
+import { changeNameAndPassword, addProfilePicture, getSubscribeList } from '@/api/user'
+// import {getArtifactById} from '@/api/work'
+
 
 export default {
   name:'UserProfile',
-  components: {List, SupportLevel},
+  components: {
+    List, 
+    // SupportLevelList
+    },
   // loading data from backend
   created() {
     // load Fav list, Subs list
@@ -78,6 +85,9 @@ export default {
         displayUser:true,
         displayOption:false,
         displayConfirm:false,
+        subscribeList:[],
+        favoriteList:[],
+        artifacts: [],
         Artists: [
             {
               name: '吉田誠治',
@@ -184,8 +194,44 @@ export default {
     tabClicked(p) {
       if (p['props']['label'] == 'New Post'){
         this.$router.push('/newPost')
+        console.log(1)
       }
-    }
+      if (p['props']['label'] == 'Subscribe List'){
+        console.log(1)
+        getSubscribeList()
+          .then(res => {
+            console.log(res.data);
+            this.subscribeList = res.data
+            // console.log(this.subscribeList[0][0])
+      //       for (let i = 0;i < this.subscribeList.length;i++){
+      //         const userId = {id:this.subscribeList[i][0].user.id}
+      //         getArtifactById(userId)
+      //           .then(res => {
+      //             const urlPic = {"url":res.data[0].store_location}
+      //             this.artifacts.push(urlPic)
+      //           })
+      //           .catch(err => {
+      //           console.log(err)
+      //         })
+        
+      // }
+            console.log("0",res.data[0][0].user.username)
+          })
+          .catch(err => {
+          console.log(err)
+      })
+      }
+
+    },
+
+    // checkIsImage(url) {
+    //   const fileExtension = url.substring(url.lastIndexOf('.') + 1);
+    //   if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
+    //     return process.env.VUE_APP_BASE_API + url
+    //   } else {
+    //     return require('@/assets/no_cover.jpeg')
+    //   }
+    // },
   },
 
   computed: {
