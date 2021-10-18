@@ -1,7 +1,6 @@
 <template>
   <div class="nav-container">
     <div class="logo"></div>
-    <!-- User not login -->
     <div v-if="!isLogin">
       <div class="function" v-if="navBarType === 'login'">
         <div class="search">
@@ -10,7 +9,6 @@
           </span>
           <span class="a">
             <el-button type="primary" @click="Search()" round>Search</el-button>
-            <!-- <span>{{creatorList}}</span> -->
           </span>
 
         </div>
@@ -70,8 +68,7 @@ export default {
         .then(res => {
           // console.log(res.data)
           // console.log(res.data[0])
-          console.log(res.data[0][0].user.username)
-          console.log(res.data[1][0].user.username)
+          // console.log(res.data[0][0].user.username)
           // this.creatorList = res.data;
           this.creatorList = JSON.stringify(res.data)
           this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
@@ -100,7 +97,6 @@ export default {
 
 <style scoped>
 .nav-container{
-  /*background: antiquewhite;*/
   height: 64px;
   padding: 0px 16px;
   display: flex;
@@ -129,6 +125,7 @@ export default {
 
 span.a {
   display: inline-block; 
+  margin-left: 10px;
  
 }
 </style>
