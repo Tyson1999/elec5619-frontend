@@ -6,13 +6,18 @@
     </div>
     <div class="recommendations">
       <div v-for="artist in recommendArtists"
-           :class="'recommend-artist' + ' ' + 'artist' + artist['id']"
+           :class="'recommend-artist' + ' ' + 'artist' + artist['user_id']"
            :key="artist">
         <a href="">
-          <div class="artistBg" :ref="'artistBg' + artist['id']"></div>
+          <div class="artistBg" >
+            <img :src="checkIsImage(artist.store_location)">
+          </div>
           <div class="artistInfo">
-            <div class="artistAvatar" :ref="'artistAvatar' + artist['id']"></div>
-            <div class="artistName">{{artist['name']}}</div>
+            <div class="artistAvatar" >
+              <img :src="checkIsImage(artist.profile_pic_store)">
+            </div>
+            <div class="artistName">
+            </div>
           </div>
         </a>
       </div>
@@ -23,18 +28,24 @@
     <div class="achievementsByNow">
       <div class="title">The achievements by now</div>
       <div class="grid-container">
-        <div class="grid-content">
+        <div v-for="artist in recommendArtists.slice(0,3)"
+          :class="'recommend-artist' + ' ' + 'artist' + artist['user_id']"
+          :key="artist">
+          <div class="grid-content">
+            <div class="pic">
+              <img :src="checkIsImage(artist.store_location)">
+            </div>
+             <div class="text">{{artist['user_id']}}</div>
+          </div>
+        <!-- <div class="grid-content">
           <div class="pic" style="backgroundImage: url('https://s.pximg.net/www/js/fanbox/0c04a4e7e720095e665d67720f141de9.png')"></div>
           <div class="text">7.8M Users</div>
         </div>
         <div class="grid-content">
           <div class="pic" style="backgroundImage: url('https://s.pximg.net/www/js/fanbox/0c04a4e7e720095e665d67720f141de9.png')"></div>
           <div class="text">7.8M Users</div>
-        </div>
-        <div class="grid-content">
-          <div class="pic" style="backgroundImage: url('https://s.pximg.net/www/js/fanbox/0c04a4e7e720095e665d67720f141de9.png')"></div>
-          <div class="text">7.8M Users</div>
-        </div>
+        </div> -->
+      </div>
       </div>
       <div class="date-until">
         The data is up-to-date until 09, 2021
@@ -59,61 +70,46 @@
 </template>
 
 <script>
+import { frontpage } from '@/api/user'
+
 export default {
   name: 'Index',
   data() {
     return {
-      recommendArtists: [{
-        id: 1,
-        name: 'test1',
-        backgroundImg: 'https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/15158551/cover/NPy80WSo8K6OM7e2XexEmj6T.jpeg',
-        avatar: 'https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-      },{
-        id: 2,
-        name: 'test2',
-        backgroundImg: 'https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg',
-        avatar: 'https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-      },
-        {
-          id: 3,
-          name: 'test3',
-          backgroundImg: 'https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg',
-          avatar: 'https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-        },
-        {
-          id: 4,
-          name: 'test4',
-          backgroundImg: 'https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg',
-          avatar: 'https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-        },
-        {
-          id: 5,
-          name: 'test5',
-          backgroundImg: 'https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg',
-          avatar: 'https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-        },
-        {
-          id: 6,
-          name: 'test6',
-          backgroundImg: 'https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg',
-          avatar: 'https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-        },
-      ]
+      recommendArtists: [],
     }
   },
   mounted() {
-    this.loadArtistsInfo()
+    frontpage()
+      .then(res => {
+        this.recommendArtists=res.data
+        console.log(this.recommendArtists[0])
+
+      })
+      .catch(err => {
+        console.log({err})
+      })
   },
   methods: {
-    loadArtistsInfo() {
-      for (const artist of this.recommendArtists){
-        const artistBgDom = this.$refs['artistBg' + artist['id']]
-        const artistAvatarDom = this.$refs['artistAvatar' + artist['id']]
-        artistBgDom.style.backgroundImage = `url("${artist['backgroundImg']}")`
-        console.log(artistAvatarDom)
-        artistAvatarDom.style.backgroundImage = `url("${artist['avatar']}")`
+
+    checkIsImage(url) {
+      const fileExtension = url.substring(url.lastIndexOf('.') + 1);
+      if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
+        return process.env.VUE_APP_BASE_API + url
+      } else {
+        return require('@/assets/no_cover.jpeg')
       }
-    }
+    },
+    //
+    // {
+    //   for (const artist of this.recommendArtists){
+    //     const artistBgDom = this.$refs['artistBg' + artist['id']]
+    //     const artistAvatarDom = this.$refs['artistAvatar' + artist['id']]
+    //     artistBgDom.style.backgroundImage = `url("${artist['backgroundImg']}")`
+    //     console.log(artistAvatarDom)
+    //     artistAvatarDom.style.backgroundImage = `url("${artist['avatar']}")`
+    //   }
+    // }
   }
 }
 </script>
@@ -244,7 +240,7 @@ export default {
 .grid-content .pic {
   height: 100%;
   width: 100%;
-  padding-top: 65%;
+  /* padding-top: 65%; */
   background: center center / contain no-repeat;
   flex: 3;
 }
@@ -304,5 +300,9 @@ export default {
   border-radius: 30px;
   width: 280px;
   height: 60px;
+}
+img {
+  max-width:100%;
+  max-height:100%;
 }
 </style>
