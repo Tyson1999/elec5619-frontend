@@ -16,18 +16,21 @@
   />
   <div style="background: #eee; padding-top: 30px;">
     <div class="content-container">
-      <div class="posts" v-if="posts">
+      <div class="posts" v-if="posts" v-loading="loading">
           <div v-for="post in posts" :key="post" class="post">
             <a a href="javascript:;" style="text-decoration: none; color: #000" @click="checkArticleDetail(post)">
               <div class="post-image" :style="{backgroundImage: 'url(' + checkIsImage(post['store_location']) + ')'}"></div>
               <div class="post-meta">
                 <div class="post-date">{{post['category_name']}}</div>
-                <div class="post-privilege">{{'Public to everyone'}}</div>
+                <div class="post-privilege">{{support_type == 'General' ? 'Public to everyone' : 'Supporters can see'}}</div>
               </div>
               <div class="post-title">{{post['title']}}</div>
               <div class="post-desc" v-html="interceptOverflow(post['description'])"></div>
             </a>
           </div>
+      </div>
+      <div v-else class="posts">
+        The creator haven't post anything or you don't have permission.
       </div>
       <div class="support-levels">
         <div v-if="showSubscribeType">
@@ -51,6 +54,7 @@ import {ElMessage} from 'element-plus'
 import Article from '@/components/Article'
 import {getArtifactById} from '@/api/work'
 import {getCreatorInfo, followCreator, unfollowCreator} from '@/api/creator'
+import {getSubscribeList} from '@/api/user'
 export default {
   name: 'Artist',
   components: {Article},
@@ -84,14 +88,43 @@ export default {
       /* Params to the Article.vue components */
       showDetail: false,
       title: '',
-      description: ''
+      description: '',
+      loading: true,
+      support_type: 'General'
     }
   },
   created() {
     // Obtain user id, and request the related data from backend
     getArtifactById(this.creatorId)
-        .then(res => {
-          this.posts = res['data']
+        .then(artifact => {
+          getSubscribeList().then(res => {
+            res = res['data']
+            for (let item of res){
+              item = item[0]
+              const user = item['user']
+              const user_id = user['id']
+              if (user_id == this.creatorId['id']){
+                this.support_type = item['categoryName']['id']
+                break
+              }
+            }
+            console.log("Support type is " + this.support_type)
+
+            artifact = artifact['data']
+            const artifact_show = []
+            for (const item of artifact){
+              const category_name = item['category_name']
+              if (category_name == this.support_type || category_name == 'General'){
+                artifact_show.push(item)
+              }
+            }
+            this.loading = false
+            if (artifact_show.length == 0){
+              this.posts = null
+            } else {
+              this.posts = artifact_show
+            }
+          })
         })
         .catch(() => {
           this.$router.push('/404')
@@ -110,7 +143,6 @@ export default {
             this.subscribeType[2]['price'] = res['subscribeType']['art']
           }
         })
-
   },
   methods: {
     interceptOverflow(text) {
