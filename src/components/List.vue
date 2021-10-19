@@ -12,8 +12,7 @@
           <div class="row">
             <div class="column1">
               <img
-                  src='https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg'
-                   style="width:80px">
+                  :src= checkIsImage(artist[0].user.profilePicStore) style="width:80px">
             </div>
             <div class="column2">
               <h5>{{artist[0].user.username}}</h5>

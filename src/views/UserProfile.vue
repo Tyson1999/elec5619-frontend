@@ -23,7 +23,6 @@
             <el-form-item label="Username">
               <el-input  placeholder="Username" v-model="username"></el-input>
             </el-form-item>
-            <p>{{id}}</p>
             <el-form-item label="Password">
               <el-input placeholder="Password" v-model="newPassword" show-password></el-input>
             </el-form-item>
@@ -43,7 +42,7 @@
         </el-tab-pane>
         <!-- Creation List -->
         <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
-          <List :elements="Artists" />
+          <List :elements="subscribeList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Support level -->
         <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
@@ -59,7 +58,7 @@ import List from '@/components/List'
 import SupportLevel from '@/components/SupportLevel'
 import { mapState } from 'vuex'
 import { ElMessage } from 'element-plus'
-import { changeNameAndPassword, addProfilePicture, getSubscribeList, getFavouriteList } from '@/api/user'
+import { changeNameAndPassword, addProfilePicture, getSubscribeList, getFavouriteList,getUserInfo } from '@/api/user'
 import {getArtifactById} from '@/api/work'
 
 
@@ -187,29 +186,30 @@ export default {
                 })
           }
         }
-        if (p['props']['label'] == 'My Creation List') {
-          getFavouriteList()
-              .then(res => {
-                this.subscribeList = res.data
-                for (let i = 0; i < this.subscribeList.length; i++) {
-                  const userId = {id: this.subscribeList[i][0].user.id}
-                  getArtifactById(userId)
-                      .then(res => {
-                        const urlPic = {"url": res.data[0].store_location}
-                        this.artifacts.push(urlPic)
-                      })
-                      .catch(err => {
-                        console.log(err)
-                      })
-
-                }
-                console.log("0", this.artifacts)
-              })
-              .catch(err => {
+       if (p['props']['label'] == 'My Creation List'){
+        getUserInfo()
+          .then(res => {
+            // console.log("hhh",res.data.id)
+            const user={"username": res.data.username,"profilePicStore":res.data.avatar}
+            this.subscribeList.push(user)
+            this.subscribeList.push(this.subscribeList)
+            // console.log(this.subscribeList[0][0].username)
+              const userId = {id: res.data.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
                 console.log(err)
               })
-        }
-      }
+            console.log("0",this.artifacts)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+       }
+    },
   },
   computed: {
     ...mapState({

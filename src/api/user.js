@@ -75,4 +75,12 @@ export function searchName(creator) {
     })
 }
 
+export function frontpage() {
+    return request({
+        url: '/api/frontpage',
+        method: 'get',
+        
+    })
+}
+
 
