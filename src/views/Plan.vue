@@ -144,6 +144,9 @@ export default {
         creatorId: this.creatorId
       }).then(res => {
         ElMessage.success(res['msg'])
+        setTimeout(() => {
+          this.$router.push('/artist/' + this.$route.params['creatorId'])
+        }, 1000)
       })
     }
   }
