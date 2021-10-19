@@ -17,6 +17,7 @@
               <img :src="checkIsImage(artist.profile_pic_store)">
             </div>
             <div class="artistName">
+              {{artist.username}}
             </div>
           </div>
         </a>
