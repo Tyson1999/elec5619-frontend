@@ -28,9 +28,9 @@ router.beforeEach(async(to, from, next) => {
                     next()
                 } else {
                     // send token to backend and get user info
-                    const role = await store.dispatch('getUserInfo')
+                    await store.dispatch('getUserInfo')
                     // add sync routers
-                    console.log('role is ' + role)
+                    // console.log('role is ' + role)
                     next({ ...to, replace: true })
                 }
             } catch (e) {

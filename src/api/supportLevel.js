@@ -7,8 +7,10 @@ export function getSubsType() {
     })
 }
 
-// export function setSubsType(subsType) {
-//     return request({
-//
-//     })
-// }
+export function setSubsType(data) {
+    return request({
+        url: '/api/subscribetype',
+        method: 'post',
+        data
+    })
+}

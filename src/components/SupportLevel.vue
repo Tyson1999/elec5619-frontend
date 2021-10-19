@@ -26,20 +26,20 @@
     <!-- New SupportLevel Form -->
     <el-dialog title="Add new support level" v-model="dialogFormVisible">
       <el-form :model="form" label-width="140px" class="form">
-        <el-form-item label="Level name" required>
-          <el-input v-model="form.name" autocomplete="off" width="120px"></el-input>
+        <el-form-item label="PHOTO level price" required>
+          <el-input v-model="form.photoPrice" autocomplete="off" width="120px"></el-input>
         </el-form-item>
-        <el-form-item label="Level description" required>
-          <el-input v-model="form.description" autocomplete="off"></el-input>
+        <el-form-item label="MUSIC level price" required>
+          <el-input v-model="form.musicPrice" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="Level price" required>
-          <el-input v-model="form.price" autocomplete="off"></el-input>
+        <el-form-item label="ART level price" required>
+          <el-input v-model="form.artPrice" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">
+          <el-button type="primary" @click="setSubsType">
             Confirm
           </el-button>
         </span>
@@ -50,8 +50,8 @@
 </template>
 
 <script>
-// import {ElMessage} from 'element-plus'
-import {getSubsType} from '@/api/supportLevel'
+import {ElMessage} from 'element-plus'
+import {getSubsType, setSubsType} from '@/api/supportLevel'
 export default {
   name: 'SupportLevel',
   created() {
@@ -62,10 +62,13 @@ export default {
           } else {
             this.tableVisibility = true
             const support_detail = res['data']
-            this.SupportLevel[0]['price'] = support_detail['photo'] + ' per month'
-            this.SupportLevel[1]['price'] = support_detail['music'] + ' per month'
-            this.SupportLevel[2]['price'] = support_detail['art'] + ' per month'
-            // console.log(res)
+            this.SupportLevel[0]['price'] = '$' + support_detail['photo'] + ' per month'
+            this.SupportLevel[1]['price'] = '$' + support_detail['music'] + ' per month'
+            this.SupportLevel[2]['price'] = '$' + support_detail['art'] + ' per month'
+
+            this.form.photoPrice = support_detail['photo']
+            this.form.musicPrice = support_detail['music']
+            this.form.artPrice = support_detail['art']
           }
         })
   },
@@ -74,9 +77,9 @@ export default {
       dialogFormVisible: false,
       tableVisibility: false,
       form: {
-        name: '',
-        description: '',
-        price: 0
+        photoPrice: 0,
+        musicPrice: 0,
+        artPrice: 0
       },
       SupportLevel: [
         {
@@ -118,6 +121,18 @@ export default {
     },
     headClass() {
       return "text-align:center"
+    },
+    setSubsType() {
+      setSubsType({
+        art: this.form['artPrice'],
+        photo: this.form['photoPrice'],
+        music: this.form['musicPrice']
+      }).then(res => {
+        ElMessage.success(res['msg'])
+        setTimeout(() => {
+          this.$router.go(0)
+        }, 1000)
+      })
     }
   }
 }

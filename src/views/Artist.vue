@@ -25,22 +25,22 @@
                 <div class="post-privilege">{{'Public to everyone'}}</div>
               </div>
               <div class="post-title">{{post['title']}}</div>
-              <div class="post-desc">{{interceptOverflow(post['description'])}}</div>
+              <div class="post-desc" v-html="interceptOverflow(post['description'])"></div>
             </a>
           </div>
       </div>
       <div class="support-levels">
-        <div v-if="levels.length > 0">
-          <div v-for="level in levels" :key="level" class="level">
+        <div v-if="showSubscribeType">
+          <div v-for="level in subscribeType" :key="level" class="level">
             <div class="level-image" :style="{backgroundImage: 'url(' + level['cover'] + ')'}"></div>
             <div class="level-title">{{level['title']}}</div>
             <div class="level-desc">{{level['desc']}}</div>
             <div class="level-price" v-html="handlePrice(level['price'])"></div>
-            <el-button class="level-join" type="primary" icon="el-icon-star-off" round>Join now</el-button>
+            <el-button class="level-join" type="primary" icon="el-icon-star-off" round @click="join(level)">Join now</el-button>
           </div>
         </div>
         <div v-else class="level" style="padding: 24px;">
-          The artist doesn't accept any support.
+          The creator doesn't accept any support.
         </div>
       </div>
     </div>
@@ -61,18 +61,25 @@ export default {
       name: '',
       follow: false,
       posts: [],
-      levels: [{
+      showSubscribeType: false,
+      subscribeType: [{
         id: 1,
         cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg',
-        title: 'LATEST COMICS',
-        desc: 'You can see my comics for the last 2 months.',
-        price: '5.99'
+        title: 'LATEST PHOTOS',
+        desc: 'You can see my latest photos last for 1 month.',
+        price: 0
       },{
         id: 2,
         cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg',
-        title: 'LATEST VIDEOS',
-        desc: 'You can see my videos for the last 2 months.',
-        price: '9.99'
+        title: 'LATEST MUSICS',
+        desc: 'You can see my latest musics last for 1 month.',
+        price: 0
+      }, {
+        id: 3,
+        cover: 'https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/64055/cover/5X3OKl1mVniwx9nWovzv6dgd.jpeg',
+        title: 'LATEST ARTS',
+        desc: 'You can see my latest arts last for 1 month.',
+        price: 0
       }],
       /* Params to the Article.vue components */
       showDetail: false,
@@ -96,7 +103,14 @@ export default {
           const user = res['user']
           this.name = user['username']
           this.avatar = process.env.VUE_APP_BASE_API + user['profilePicStore']
+          if (res['subscribeType']){
+            this.showSubscribeType = true
+            this.subscribeType[0]['price'] = res['subscribeType']['photo']
+            this.subscribeType[1]['price'] = res['subscribeType']['music']
+            this.subscribeType[2]['price'] = res['subscribeType']['art']
+          }
         })
+
   },
   methods: {
     interceptOverflow(text) {
@@ -139,6 +153,9 @@ export default {
     },
     closeDrawer() {
       this.showDetail = false
+    },
+    join(level) {
+      this.$router.push("/join/" + this.creatorId['id'] + '/' + level.title)
     }
   }
 }
