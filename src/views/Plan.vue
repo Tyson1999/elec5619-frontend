@@ -71,26 +71,80 @@
     </div>
     <div class="button-group">
       <el-button>Cancel</el-button>
-      <el-button type="primary">Confirm</el-button>
+      <el-button type="primary" @click="makePayment">Confirm</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import {ElMessage} from 'element-plus'
+import {getCreatorInfo} from '@/api/creator'
+import {subscribe} from '@/api/payment'
 export default {
   name: 'Plan',
+  mounted() {
+    const creatorId = this.$route.params['creatorId']
+    let type = this.$route.params['type']
+    switch (type) {
+      case 'LATEST PHOTOS':
+        type = 'photo'
+        break;
+      case 'LATEST MUSICS':
+        type = 'music'
+        break;
+      case 'LATEST ARTS':
+        type = 'art'
+        break;
+    }
+    getCreatorInfo({id: creatorId}).then(res => {
+      res = res['data']
+      const creator = res['user']
+      this.artist = creator['name']
+      this.creatorId = creator['id']
+      this.avatar = process.env.VUE_APP_BASE_API + creator['profilePicStore']
+      const subscribeType = res['subscribeType']
+      this.price = subscribeType[type]
+      this.subscriptionTypeId = subscribeType['subscriptionTypeId']
+      this.subscribeType = this.mapSubscribeType(type)
+    }).catch(() => {
+      this.$router.push('/404')
+    })
+  },
   data() {
     return {
+      creatorId: 0,
       paymentMethod: 1,
-      artist: 'Test',
+      subscriptionTypeId: 0,
+      subscribeType: 0,
+      artist: 'artist',
       avatar: "https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/9145919/icon/gFrkyUNFiADMNPQD8wdnFAVt.jpeg",
       bg: "https://pixiv.pximg.net/c/936x600_90_a2_g5/fanbox/public/images/plan/6505/cover/4HZaRzK6MChs7HFaJp7zknsj.jpeg",
-      price: 5.9
+      price: 0
     }
   },
   methods: {
     changePaymentMethod(id) {
       this.paymentMethod = id
+    },
+    mapSubscribeType(type){
+      switch (type) {
+        case 'photo':
+          return 0
+        case 'music':
+          return 1
+        case 'art':
+          return 2
+      }
+    },
+    makePayment() {
+      subscribe({
+        subscribeType: this.subscribeType,
+        paymentsSerialId: 0,
+        subscriptionTypeId: this.subscriptionTypeId,
+        creatorId: this.creatorId
+      }).then(res => {
+        ElMessage.success(res['msg'])
+      })
     }
   }
 }

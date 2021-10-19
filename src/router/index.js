@@ -38,7 +38,7 @@ const routes = [
         },
   },
   {
-        path: '/join/:id',
+        path: '/join/:creatorId/:type',
         name: 'Plan',
         component: Plan,
         meta: {

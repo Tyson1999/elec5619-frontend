@@ -23,7 +23,7 @@
             <div class="column3">
               <div class="image-container">
                 <el-image
-                    v-for="artifact in picList" :key="artifact" 
+                    v-for="artifact in picList" :key="artifact"
                     :src= checkIsImage(artifact.url)
                     fit="cover"
                 >
@@ -50,12 +50,7 @@ export default {
       type: Array,
       required: true
     },
-    
-
   },
-  
-  // for test purpose
-  
   data() {
     return {
       displayUser:true,
@@ -65,16 +60,14 @@ export default {
       picList:[]
     }
   },
-  
+
   watch: {
     elements(){
       this.subList=this.elements
-      this.picList=this.artifacts
-      console.log("new", this.subList)
-      // console.log("new", this.picList)
     },
-
-   
+    artifacts() {
+      this.picList=this.artifacts
+    }
   },
   methods: {
     Back() {
