@@ -80,6 +80,11 @@ export default {
           this.favoriteList = res.data
           this.loading--
         })
+    getFavouriteList()
+        .then(res => {
+          this.creationList = res.data
+          this.loading--
+        })  
   },
   data() {
       return {
@@ -92,6 +97,7 @@ export default {
         displayConfirm:false,
         subscribeList:[],
         favoriteList:[],
+        creationList:[],
         artifacts: [],
         id:''
       }
