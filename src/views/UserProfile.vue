@@ -1,5 +1,5 @@
 <template v-slot="tip" class="el-upload__tip">
-  <div class="container">
+  <div class="container" v-loading="loading != 0">
       <el-tabs type="border-card" class="borderCard" @tab-click="tabClicked">
         <!-- Account Setting -->
         <el-tab-pane label="Account Setting" class="account">
@@ -9,6 +9,7 @@
           </div>
           <el-upload
             class="upload"
+            action=""
             :auto-upload="false"
             :on-exceed="handleExceed"
             :on-change="onUploadChange"
@@ -34,7 +35,7 @@
         </el-tab-pane>
         <!-- Favorite List -->
         <el-tab-pane label="Favorite List" class="favorite">
-          <List :elements="subscribeList" :artifacts="artifacts" />
+          <List :elements="favoriteList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Subscribe List -->
         <el-tab-pane label="Subscribe List" class="subscribe">
@@ -65,21 +66,27 @@ import {getArtifactById} from '@/api/work'
 export default {
   name:'UserProfile',
   components: {
-    List, 
+    List,
     SupportLevel
     },
-  // loading data from backend
   created() {
     // load Fav list, Subs list
-    console.log()
-    // load my work and support level
-    // eslint-disable-next-line no-empty
-    if (this.isCreator){}
+    getSubscribeList()
+        .then(res => {
+          this.subscribeList = res.data
+          this.loading--
+        })
+    getFavouriteList()
+        .then(res => {
+          this.favoriteList = res.data
+          this.loading--
+        })
   },
   data() {
       return {
         newPassword:'',
         retypePassword: '',
+        loading: 2,
         fileList: [],
         displayUser:true,
         displayOption:false,
@@ -88,7 +95,6 @@ export default {
         favoriteList:[],
         artifacts: [],
         id:''
-        
       }
   },
   methods: {
@@ -104,8 +110,6 @@ export default {
 
       if (password != retype_password){
         ElMessage.error("Two passwords don't match")
-        console.log("1",password)
-        console.log("2",retype_password)
         return;
       }
 
@@ -158,83 +162,55 @@ export default {
       }
     },
     tabClicked(p) {
-      if (p['props']['label'] == 'New Post'){
+      if (p['props']['label'] == 'New Post') {
         this.$router.push('/newPost')
-        console.log(1)
       }
-      if (p['props']['label'] == 'Subscribe List'){
-        console.log(1)
-        getSubscribeList()
-          .then(res => {
-            console.log(res.data);
-            this.subscribeList = res.data
-            for (let i = 0;i < this.subscribeList.length;i++){
-              const userId = {id:this.subscribeList[i][0].user.id}
-              getArtifactById(userId)
+      if (p['props']['label'] == 'Subscribe List') {
+        this.artifacts = []
+        for (let i = 0; i < this.subscribeList.length; i++) {
+          const userId = {id: this.subscribeList[i][0].user.id}
+          getArtifactById(userId)
+              .then(res => {
+                const urlPic = {"url": res.data[0].store_location}
+                this.artifacts.push(urlPic)
+              })
+        }
+      }
+        if (p['props']['label'] == 'Favorite List') {
+          this.artifacts = []
+          for (let i = 0; i < this.favoriteList.length; i++) {
+            const userId = {id: this.favoriteList[i][0].user.id}
+            getArtifactById(userId)
                 .then(res => {
-                  const urlPic = {"url":res.data[0].store_location}
+                  const urlPic = {"url": res.data[0].store_location}
                   this.artifacts.push(urlPic)
                 })
-                .catch(err => {
-                console.log(err)
-              })
-        
-      }
-          })
-          .catch(err => {
-          console.log(err)
-      })
-      }
-      if (p['props']['label'] == 'Favorite List'){
-        getFavouriteList()
-          .then(res => {
-            this.subscribeList = res.data
-            for (let i = 0;i < this.subscribeList.length;i++){
-              const userId = {id:this.subscribeList[i][0].user.id}
-              getArtifactById(userId)
-                .then(res => {
-                  const urlPic = {"url":res.data[0].store_location}
-                  this.artifacts.push(urlPic)
-                })
-                .catch(err => {
-                console.log(err)
-              })
-        
-      }
-            console.log("0",this.artifacts)
-          })
-          .catch(err => {
-          console.log(err)
-      })
-      }
-       if (p['props']['label'] == 'My Creation List'){
-        getFavouriteList()
-          .then(res => {
-            this.subscribeList = res.data
-            for (let i = 0;i < this.subscribeList.length;i++){
-              const userId = {id:this.subscribeList[i][0].user.id}
-              getArtifactById(userId)
-                .then(res => {
-                  const urlPic = {"url":res.data[0].store_location}
-                  this.artifacts.push(urlPic)
-                })
-                .catch(err => {
-                console.log(err)
-              })
-        
-      }
-            console.log("0",this.artifacts)
-          })
-          .catch(err => {
-          console.log(err)
-      })
-      }
+          }
+        }
+        if (p['props']['label'] == 'My Creation List') {
+          getFavouriteList()
+              .then(res => {
+                this.subscribeList = res.data
+                for (let i = 0; i < this.subscribeList.length; i++) {
+                  const userId = {id: this.subscribeList[i][0].user.id}
+                  getArtifactById(userId)
+                      .then(res => {
+                        const urlPic = {"url": res.data[0].store_location}
+                        this.artifacts.push(urlPic)
+                      })
+                      .catch(err => {
+                        console.log(err)
+                      })
 
-    },
-
-    
+                }
+                console.log("0", this.artifacts)
+              })
+              .catch(err => {
+                console.log(err)
+              })
+        }
+      }
   },
-
   computed: {
     ...mapState({
       username: state => state.username,
