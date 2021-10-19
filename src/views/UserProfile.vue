@@ -22,6 +22,7 @@
             <el-form-item label="Username">
               <el-input  placeholder="Username" v-model="username"></el-input>
             </el-form-item>
+            <p>{{id}}</p>
             <el-form-item label="Password">
               <el-input placeholder="Password" v-model="newPassword" show-password></el-input>
             </el-form-item>
@@ -33,11 +34,11 @@
         </el-tab-pane>
         <!-- Favorite List -->
         <el-tab-pane label="Favorite List" class="favorite">
-          <List :elements="Artists" />
+          <List :elements="subscribeList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Subscribe List -->
         <el-tab-pane label="Subscribe List" class="subscribe">
-          <List :elements="Artists" />
+          <List :elements="subscribeList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Creation List -->
         <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
@@ -53,16 +54,20 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { ElMessage } from 'element-plus'
 import List from '@/components/List'
 import SupportLevel from '@/components/SupportLevel'
-import { changeNameAndPassword, addProfilePicture } from '@/api/user'
+import { mapState } from 'vuex'
+import { ElMessage } from 'element-plus'
+import { changeNameAndPassword, addProfilePicture, getSubscribeList, getFavouriteList } from '@/api/user'
+import {getArtifactById} from '@/api/work'
 
 
 export default {
   name:'UserProfile',
-  components: {List, SupportLevel},
+  components: {
+    List, 
+    SupportLevel
+    },
   // loading data from backend
   created() {
     // load Fav list, Subs list
@@ -79,25 +84,11 @@ export default {
         displayUser:true,
         displayOption:false,
         displayConfirm:false,
-        Artists: [
-            {
-              name: '吉田誠治',
-              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/160x160_90_a2_g5/fanbox/public/images/user/15158551/icon/uVDbbp4FBnsIggxp4Kd7HpVJ.jpeg']
-
-            },
-            {
-              name: '吉田誠治',
-              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-
-            },
-            {
-              name: '吉田誠治',
-              description: '背景グラフィッカ／イラストレータの吉田誠治です。フリーランスで背景やイラストを描いています。SNSではメイキングやTIPSでも評価していただけることが多く、現在は京都精華大学で非常勤講師として教えたりもしています。',
-              urls: ['https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg','https://pixiv.pximg.net/c/1620x580_90_a2_g5/fanbox/public/images/creator/3439325/cover/CYDiO1go1lpqyGQD8tyurWa2.jpeg']
-            }
-        ]
+        subscribeList:[],
+        favoriteList:[],
+        artifacts: [],
+        id:''
+        
       }
   },
   methods: {
@@ -169,14 +160,86 @@ export default {
     tabClicked(p) {
       if (p['props']['label'] == 'New Post'){
         this.$router.push('/newPost')
+        console.log(1)
       }
-    }
+      if (p['props']['label'] == 'Subscribe List'){
+        console.log(1)
+        getSubscribeList()
+          .then(res => {
+            console.log(res.data);
+            this.subscribeList = res.data
+            for (let i = 0;i < this.subscribeList.length;i++){
+              const userId = {id:this.subscribeList[i][0].user.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
+                console.log(err)
+              })
+        
+      }
+          })
+          .catch(err => {
+          console.log(err)
+      })
+      }
+      if (p['props']['label'] == 'Favorite List'){
+        getFavouriteList()
+          .then(res => {
+            this.subscribeList = res.data
+            for (let i = 0;i < this.subscribeList.length;i++){
+              const userId = {id:this.subscribeList[i][0].user.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
+                console.log(err)
+              })
+        
+      }
+            console.log("0",this.artifacts)
+          })
+          .catch(err => {
+          console.log(err)
+      })
+      }
+       if (p['props']['label'] == 'My Creation List'){
+        getFavouriteList()
+          .then(res => {
+            this.subscribeList = res.data
+            for (let i = 0;i < this.subscribeList.length;i++){
+              const userId = {id:this.subscribeList[i][0].user.id}
+              getArtifactById(userId)
+                .then(res => {
+                  const urlPic = {"url":res.data[0].store_location}
+                  this.artifacts.push(urlPic)
+                })
+                .catch(err => {
+                console.log(err)
+              })
+        
+      }
+            console.log("0",this.artifacts)
+          })
+          .catch(err => {
+          console.log(err)
+      })
+      }
+
+    },
+
+    
   },
 
   computed: {
     ...mapState({
       username: state => state.username,
       isCreator: state => state.role === 'creator',
+      id: state => state.id,
       avatar: state => state.avatar
     })
   }
