@@ -1,5 +1,7 @@
 <template v-slot="tip" class="el-upload__tip">
-  <div class="container" v-loading="loading != 0">
+  <!-- <div class="container" v-loading="loading != 0"> -->
+      <div class="container" >
+
       <el-tabs type="border-card" class="borderCard" @tab-click="tabClicked">
         <!-- Account Setting -->
         <el-tab-pane label="Account Setting" class="account">
@@ -42,7 +44,7 @@
         </el-tab-pane>
         <!-- Creation List -->
         <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
-          <List :elements="subscribeList" :artifacts="artifacts" />
+          <List :elements="creationList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Support level -->
         <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
@@ -73,24 +75,26 @@ export default {
     getSubscribeList()
         .then(res => {
           this.subscribeList = res.data
-          this.loading--
+          // this.loading--
         })
     getFavouriteList()
         .then(res => {
           this.favoriteList = res.data
-          this.loading--
+          // this.loading--
         })
-    getFavouriteList()
+    getUserInfo()
         .then(res => {
-          this.creationList = res.data
-          this.loading--
-        })  
+          this.creationList.push(this.newList)
+          this.creationList[0].push({"user": {"username":res.data.username,"profilePicStore":res.data.avatar,"id":res.data.id}})
+          console.log(this.creationList[0][0].user.id)
+          // this.userId = {id: res.data.id}
+        })
   },
   data() {
       return {
         newPassword:'',
         retypePassword: '',
-        loading: 2,
+        // loading: 2,
         fileList: [],
         displayUser:true,
         displayOption:false,
@@ -99,7 +103,9 @@ export default {
         favoriteList:[],
         creationList:[],
         artifacts: [],
-        id:''
+        id:'',
+        userId:{},
+        newList:[]
       }
   },
   methods: {
@@ -193,27 +199,22 @@ export default {
           }
         }
        if (p['props']['label'] == 'My Creation List'){
-        getUserInfo()
-          .then(res => {
-            // console.log("hhh",res.data.id)
-            const user={"username": res.data.username,"profilePicStore":res.data.avatar}
-            this.subscribeList.push(user)
-            this.subscribeList.push(this.subscribeList)
-            // console.log(this.subscribeList[0][0].username)
-              const userId = {id: res.data.id}
+            const userId = {id: this.creationList[0][0].user.id}
+            console.log("33",userId)
               getArtifactById(userId)
                 .then(res => {
-                  const urlPic = {"url":res.data[0].store_location}
+                  // console.log("33",res.data[0]['store_location'])
+                  const urlPic = {"url":res.data[0]['store_location']}
                   this.artifacts.push(urlPic)
                 })
                 .catch(err => {
                 console.log(err)
               })
             console.log("0",this.artifacts)
-          })
-          .catch(err => {
-            console.log(err)
-          })
+          // })
+          // .catch(err => {
+          //   console.log(err)
+          // })
        }
     },
   },

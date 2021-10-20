@@ -39,6 +39,9 @@
 </template>
 
 <script>
+import {unfollowCreator} from '@/api/creator'
+import {ElMessage} from 'element-plus'
+
 export default {
   name: 'List',
   props: {
@@ -64,6 +67,7 @@ export default {
   watch: {
     elements(){
       this.subList=this.elements
+      console.log("sub",this.subList[0][0].user.username)
     },
     artifacts() {
       this.picList=this.artifacts
@@ -86,6 +90,13 @@ export default {
     },
     Delete(artist){
       console.log(artist)
+      console.log(artist[0])
+      unfollowCreator({"id":artist[0].user.id}).then(res => {
+        ElMessage.success(res['msg'])
+        setTimeout(() => {
+          this.$router.go(0)
+        }, 1000)
+      })
     },
 
     Modify(artist){
