@@ -105,6 +105,7 @@ export default {
         formData.append('title', title)
         formData.append('description', description)
         formData.append('category_name', category_name)
+        formData.append('weight', 0)
         addPost(formData).then(res => {
           ElMessage.success(res['msg'])
           setTimeout(() => {

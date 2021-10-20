@@ -6,17 +6,14 @@
     </div>
     <div class="recommendations">
       <div v-for="artist in recommendArtists"
-           :class="'recommend-artist' + ' ' + 'artist' + artist['user_id']"
+           class='recommend-artist'
            :key="artist">
-        <a href="">
-          <div class="artistBg" >
-            <img :src="checkIsImage(artist.store_location)">
-          </div>
+        <a :href="'/artist/' + artist['user_id']">
+          <div class="artistBg" :ref="'artistBg' + artist['username']"></div>
           <div class="artistInfo">
-            <div class="artistAvatar" >
-              <img :src="checkIsImage(artist.profile_pic_store)">
-            </div>
+            <div class="artistAvatar" :ref="'artistAvatar' + artist['username']"></div>
             <div class="artistName">
+              {{artist.username}}
             </div>
           </div>
         </a>
@@ -28,24 +25,18 @@
     <div class="achievementsByNow">
       <div class="title">The achievements by now</div>
       <div class="grid-container">
-        <div v-for="artist in recommendArtists.slice(0,3)"
-          :class="'recommend-artist' + ' ' + 'artist' + artist['user_id']"
-          :key="artist">
-          <div class="grid-content">
-            <div class="pic">
-              <img :src="checkIsImage(artist.store_location)">
-            </div>
-             <div class="text">{{artist['user_id']}}</div>
-          </div>
-        <!-- <div class="grid-content">
+        <div class="grid-content">
           <div class="pic" style="backgroundImage: url('https://s.pximg.net/www/js/fanbox/0c04a4e7e720095e665d67720f141de9.png')"></div>
           <div class="text">7.8M Users</div>
         </div>
         <div class="grid-content">
           <div class="pic" style="backgroundImage: url('https://s.pximg.net/www/js/fanbox/0c04a4e7e720095e665d67720f141de9.png')"></div>
           <div class="text">7.8M Users</div>
-        </div> -->
-      </div>
+        </div>
+        <div class="grid-content">
+          <div class="pic" style="backgroundImage: url('https://s.pximg.net/www/js/fanbox/0c04a4e7e720095e665d67720f141de9.png')"></div>
+          <div class="text">7.8M Users</div>
+        </div>
       </div>
       <div class="date-until">
         The data is up-to-date until 09, 2021
@@ -82,34 +73,32 @@ export default {
   mounted() {
     frontpage()
       .then(res => {
-        this.recommendArtists=res.data
-        console.log(this.recommendArtists[0])
-
+        this.recommendArtists = res.data
+        this.loadArtistsInfo()
       })
       .catch(err => {
         console.log({err})
       })
   },
   methods: {
-
     checkIsImage(url) {
       const fileExtension = url.substring(url.lastIndexOf('.') + 1);
-      if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
+      if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif') {
         return process.env.VUE_APP_BASE_API + url
       } else {
         return require('@/assets/no_cover.jpeg')
       }
     },
-    //
-    // {
-    //   for (const artist of this.recommendArtists){
-    //     const artistBgDom = this.$refs['artistBg' + artist['id']]
-    //     const artistAvatarDom = this.$refs['artistAvatar' + artist['id']]
-    //     artistBgDom.style.backgroundImage = `url("${artist['backgroundImg']}")`
-    //     console.log(artistAvatarDom)
-    //     artistAvatarDom.style.backgroundImage = `url("${artist['avatar']}")`
-    //   }
-    // }
+    loadArtistsInfo() {
+      this.$nextTick(() => {
+        for (const artist of this.recommendArtists) {
+          const artistBgDom = this.$refs['artistBg' + artist['username']]
+          const artistAvatarDom = this.$refs['artistAvatar' + artist['username']]
+          artistBgDom.style.backgroundImage = `url("${process.env.VUE_APP_BASE_API + artist['store_location']}")`
+          artistAvatarDom.style.backgroundImage = `url("${process.env.VUE_APP_BASE_API + artist['profile_pic_store']}")`
+        }
+      })
+    }
   }
 }
 </script>
@@ -152,7 +141,7 @@ export default {
 
 .artistBg {
   height: 70%;
-  background-size: cover;
+  background: center / cover no-repeat;
   border-radius: 12px;
 }
 
@@ -240,7 +229,7 @@ export default {
 .grid-content .pic {
   height: 100%;
   width: 100%;
-  /* padding-top: 65%; */
+   padding-top: 65%;
   background: center center / contain no-repeat;
   flex: 3;
 }
