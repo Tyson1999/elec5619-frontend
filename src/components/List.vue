@@ -3,7 +3,7 @@
       <el-button type="primary" class="back" @click="Back()" round>Back</el-button>
       <el-button type="primary" class="edit" @click="Edit()" round>Edit</el-button>
     </div>
-    <div class="block" v-for="artist in subList" :key="artist">
+    <div class="block" v-for="artist in subList" :key="artist" @click="jump(artist)">
       <el-col :span="4" class="delete" v-show="displayOption">
         <el-button type="danger" icon="el-icon-delete" circle @click="Delete(artist)"></el-button>
       </el-col>
@@ -17,8 +17,6 @@
             <div class="column2">
               <h5>{{artist[0].user.username}}</h5>
               <h5>{{artist[0].user.description}}</h5>
-
-              <!-- <p>{{interceptOverflow(artist[0].user.description)}}</p> -->
             </div>
             <div class="column3">
               <div class="image-container">
@@ -66,11 +64,10 @@ export default {
 
   watch: {
     elements(){
-      this.subList=this.elements
-      console.log("sub",this.subList[0][0].user.username)
+      this.subList = this.elements
     },
     artifacts() {
-      this.picList=this.artifacts
+      this.picList = this.artifacts
     }
   },
   methods: {
@@ -98,11 +95,9 @@ export default {
         }, 1000)
       })
     },
-
-    Modify(artist){
-      console.log(artist)
-      this.$router.push('NewPost')
-
+    jump(item) {
+      const user = item[0]['user']['id']
+      this.$router.push(`/artist/${user}`)
     },
     Confirm(){
       this.displayOption=false;

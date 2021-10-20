@@ -1,7 +1,5 @@
-<template v-slot="tip" class="el-upload__tip">
-  <!-- <div class="container" v-loading="loading != 0"> -->
-      <div class="container" >
-
+<template>
+      <div class="container" v-loading="loading != 0">
       <el-tabs type="border-card" class="borderCard" @tab-click="tabClicked">
         <!-- Account Setting -->
         <el-tab-pane label="Account Setting" class="account">
@@ -60,7 +58,7 @@ import List from '@/components/List'
 import SupportLevel from '@/components/SupportLevel'
 import { mapState } from 'vuex'
 import { ElMessage } from 'element-plus'
-import { changeNameAndPassword, addProfilePicture, getSubscribeList, getFavouriteList,getUserInfo } from '@/api/user'
+import { changeNameAndPassword, addProfilePicture, getUserInfo, getSubscribeList, getFavouriteList } from '@/api/user'
 import {getArtifactById} from '@/api/work'
 
 
@@ -75,26 +73,27 @@ export default {
     getSubscribeList()
         .then(res => {
           this.subscribeList = res.data
-          // this.loading--
+          this.loading--
         })
     getFavouriteList()
         .then(res => {
           this.favoriteList = res.data
-          // this.loading--
+          this.loading--
         })
     getUserInfo()
         .then(res => {
-          this.creationList.push(this.newList)
-          this.creationList[0].push({"user": {"username":res.data.username,"profilePicStore":res.data.avatar,"id":res.data.id}})
-          console.log(this.creationList[0][0].user.id)
-          // this.userId = {id: res.data.id}
+          res = res['data']
+          const lst = []
+          lst.push([])
+          lst[0].push({"user": {"username":res.username,"profilePicStore":res.avatar,"id":res.id}})
+          this.creationList = lst
+          this.loading--
         })
   },
   data() {
       return {
         newPassword:'',
         retypePassword: '',
-        // loading: 2,
         fileList: [],
         displayUser:true,
         displayOption:false,
@@ -105,7 +104,7 @@ export default {
         artifacts: [],
         id:'',
         userId:{},
-        newList:[]
+        loading: 3
       }
   },
   methods: {
@@ -199,22 +198,16 @@ export default {
           }
         }
        if (p['props']['label'] == 'My Creation List'){
-            const userId = {id: this.creationList[0][0].user.id}
-            console.log("33",userId)
+            this.artifacts = []
+            const userId = {id: this.creationList[0][0]['user']['id']}
               getArtifactById(userId)
                 .then(res => {
-                  // console.log("33",res.data[0]['store_location'])
                   const urlPic = {"url":res.data[0]['store_location']}
                   this.artifacts.push(urlPic)
                 })
                 .catch(err => {
                 console.log(err)
               })
-            console.log("0",this.artifacts)
-          // })
-          // .catch(err => {
-          //   console.log(err)
-          // })
        }
     },
   },
@@ -233,23 +226,6 @@ export default {
 
 
 <style scoped>
-
-.container {
-  background-color: antiquewhite;
-  /* position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto; */
-}
-
-.el-tabs--border-card {
-  background-color: antiquewhite;
-}
-.container {
-  background-color: antiquewhite;
-}
 .account {
   height: 500px;
 }
