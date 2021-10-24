@@ -38,7 +38,7 @@
           <!-- <span>{{creatorList}}</span> -->
         </span>
 
-       
+
       </div>
     </div>
   </div>
@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       searchContent: '',
-      creatorList:[] 
+      creatorList:[]
     }
   },
   methods: {
@@ -66,17 +66,13 @@ export default {
       const creator = this.searchContent
       searchName(creator)
         .then(res => {
-          // console.log(res.data)
-          // console.log(res.data[0])
-          // console.log(res.data[0][0].user.username)
-          // this.creatorList = res.data;
           this.creatorList = JSON.stringify(res.data)
           this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
           })
           .catch(err => {
             console.log({err})
           })
-        
+
     },
   },
   computed: {
@@ -89,9 +85,9 @@ export default {
       console.log(to)
     },
   },
-  
 
-  
+
+
 }
 </script>
 
@@ -124,8 +120,8 @@ export default {
 }
 
 span.a {
-  display: inline-block; 
+  display: inline-block;
   margin-left: 10px;
- 
+
 }
 </style>

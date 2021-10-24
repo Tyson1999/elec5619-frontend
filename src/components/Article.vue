@@ -2,10 +2,12 @@
   <el-drawer
       v-model="show_drawer"
       :title="title"
-      direction="rtl"
       :before-close="handleClose"
+      :artifact="artifact"
+      direction="rtl"
   >
     <div v-html="description"></div>
+    <el-button type="primary" style="margin-top: 20px;" @click="download">Download the artifact</el-button>
   </el-drawer>
 </template>
 
@@ -22,6 +24,10 @@ export default {
       default: ''
     },
     description: {
+      type: String,
+      default: ''
+    },
+    artifact: {
       type: String,
       default: ''
     }
@@ -47,7 +53,10 @@ export default {
              this.$emit("closeDrawer")
            })
            .catch(() => {})
-     }
+     },
+    download() {
+      window.open(process.env.VUE_APP_BASE_API + this.artifact,'_blank')
+    }
   }
 }
 </script>

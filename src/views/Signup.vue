@@ -12,11 +12,11 @@
       <div class="forget-password">
         <a href="/login" class="forget-password">Already have an account?</a>
       </div>
-      <div class="social-login">
-        <el-button class="login-button">Continue with Google</el-button>
-        <el-button class="login-button">Continue with Facebook</el-button>
-        <el-button class="login-button">Continue with Twitter</el-button>
-      </div>
+<!--      <div class="social-login">-->
+<!--        <el-button class="login-button">Continue with Google</el-button>-->
+<!--        <el-button class="login-button">Continue with Facebook</el-button>-->
+<!--        <el-button class="login-button">Continue with Twitter</el-button>-->
+<!--      </div>-->
       <el-divider></el-divider>
       <div class="policy">
         You agree to follow our <a href="#"> Privacy Policy </a> and <a href="#"> Terms of Service </a> when sign up.

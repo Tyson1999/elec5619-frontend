@@ -2,7 +2,7 @@
   <div class="container">
     <div class="one-word">
       <img src="~@/assets/logo.svg">
-      <p>FANBOX is a community where creators can receive continuous support from their fans.</p>
+<!--      <p>FANBOX is a community where creators can receive continuous support from their fans.</p>-->
     </div>
     <div class="recommendations">
       <div v-for="artist in recommendArtists"

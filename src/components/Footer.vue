@@ -23,7 +23,7 @@ export default {
   padding: 12px;
   position: absolute;
   /*bottom: 0px;*/
-   bottom: -100px;
+  bottom: -100px;
   left: 0;
   right: 0;
 }

@@ -12,6 +12,7 @@
       :show="showDetail"
       :title="title"
       :description="description"
+      :artifact="artifact"
       @closeDrawer="closeDrawer"
   />
   <div style="background: #eee; padding-top: 30px;">
@@ -89,6 +90,7 @@ export default {
       showDetail: false,
       title: '',
       description: '',
+      artifact: '',
       loading: true,
       support_type: 'General'
     }
@@ -97,34 +99,39 @@ export default {
     // Obtain user id, and request the related data from backend
     getArtifactById(this.creatorId)
         .then(artifact => {
-          getSubscribeList().then(res => {
-            res = res['data']
-            for (let item of res){
-              item = item[0]
-              const user = item['user']
-              const user_id = user['id']
-              if (user_id == this.creatorId['id']){
-                this.support_type = item['categoryName']['id']
-                break
-              }
-            }
-            console.log("Support type is " + this.support_type)
-
-            artifact = artifact['data']
-            const artifact_show = []
-            for (const item of artifact){
-              const category_name = item['category_name']
-              if (category_name == this.support_type || category_name == 'General'){
-                artifact_show.push(item)
-              }
-            }
+          if (this.creatorId['id'] === this.$store.state.id){
+            this.posts = artifact['data']
             this.loading = false
-            if (artifact_show.length == 0){
-              this.posts = null
-            } else {
-              this.posts = artifact_show
-            }
-          })
+          } else {
+            getSubscribeList().then(res => {
+              res = res['data']
+              for (let item of res){
+                item = item[0]
+                const user = item['user']
+                const user_id = user['id']
+                if (user_id == this.creatorId['id']){
+                  this.support_type = item['categoryName']['id']
+                  break
+                }
+              }
+              console.log("Support type is " + this.support_type)
+
+              artifact = artifact['data']
+              const artifact_show = []
+              for (const item of artifact){
+                const category_name = item['category_name']
+                if (category_name == this.support_type || category_name == 'General'){
+                  artifact_show.push(item)
+                }
+              }
+              this.loading = false
+              if (artifact_show.length == 0){
+                this.posts = null
+              } else {
+                this.posts = artifact_show
+              }
+            })
+          }
         })
         .catch(() => {
           this.$router.push('/404')
@@ -181,6 +188,7 @@ export default {
     checkArticleDetail(post) {
       this.title = post['title']
       this.description = post['description']
+      this.artifact = post['store_location']
       this.showDetail = true
     },
     closeDrawer() {

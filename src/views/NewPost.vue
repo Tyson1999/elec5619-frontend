@@ -111,6 +111,8 @@ export default {
           setTimeout(() => {
             this.$router.push('/userProfile')
           }, 1000)
+        }).then(err => {
+          ElMessage.error(err['msg'])
         })
       }
     }

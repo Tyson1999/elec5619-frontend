@@ -202,14 +202,17 @@ export default {
             const userId = {id: this.creationList[0][0]['user']['id']}
               getArtifactById(userId)
                 .then(res => {
-                  const urlPic = {"url":res.data[0]['store_location']}
-                  this.artifacts.push(urlPic)
+                  res = res['data']
+                  for (const item of res){
+                    const urlPic = {"url": item['store_location']}
+                    this.artifacts.push(urlPic)
+                  }
                 })
                 .catch(err => {
                 console.log(err)
               })
        }
-    },
+    }
   },
   computed: {
     ...mapState({
