@@ -20,11 +20,11 @@
             </div>
             <div class="column3">
               <div class="image-container">
-                <el-image
-                    v-for="artifact in picList" :key="artifact"
+                <el-image 
+                    v-for="artifact in artist[0].user.urls" :key="artifact" 
                     :src= checkIsImage(artifact.url)
-                    fit="cover"
-                >
+                    fit="cover">
+                
                 </el-image>
               </div>
             </div>
@@ -65,9 +65,12 @@ export default {
   watch: {
     elements(){
       this.subList = this.elements
+      // console.log("1",this.subList[0][0].user.urls['url'])
+      console.log("2",this.subList[1][0].user)
     },
     artifacts() {
       this.picList = this.artifacts
+      
     }
   },
   methods: {

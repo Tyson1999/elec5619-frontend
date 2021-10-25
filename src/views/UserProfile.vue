@@ -1,5 +1,7 @@
 <template>
-      <div class="container" v-loading="loading != 0">
+      <!-- <div class="container" v-loading="loading != 0"> -->
+      <div class="container" >
+
       <el-tabs type="border-card" class="borderCard" @tab-click="tabClicked">
         <!-- Account Setting -->
         <el-tab-pane label="Account Setting" class="account">
@@ -101,6 +103,7 @@ export default {
         subscribeList:[],
         favoriteList:[],
         creationList:[],
+        artifact: [],
         artifacts: [],
         id:'',
         userId:{},
@@ -176,25 +179,39 @@ export default {
         this.$router.push('/newPost')
       }
       if (p['props']['label'] == 'Subscribe List') {
-        this.artifacts = []
+        
         for (let i = 0; i < this.subscribeList.length; i++) {
           const userId = {id: this.subscribeList[i][0].user.id}
           getArtifactById(userId)
               .then(res => {
-                const urlPic = {"url": res.data[0].store_location}
-                this.artifacts.push(urlPic)
+                this.artifacts = []
+                 for (const item of res.data){
+                    const urlPic = {"url": item['store_location']}
+                    this.artifacts.push(urlPic)
+                  }
+                   this.subscribeList[i][0].user.urls= this.artifacts
+            
               })
+            //  console.log("aa", this.subscribeList[i][0].user)
+
+
+              
         }
       }
         if (p['props']['label'] == 'Favorite List') {
-          this.artifacts = []
           for (let i = 0; i < this.favoriteList.length; i++) {
             const userId = {id: this.favoriteList[i][0].user.id}
             getArtifactById(userId)
                 .then(res => {
-                  const urlPic = {"url": res.data[0].store_location}
-                  this.artifacts.push(urlPic)
+                  this.artifacts = []
+                 for (const item of res.data){
+                    const urlPic = {"url": item['store_location']}
+                    this.artifacts.push(urlPic)
+                  }
+                  this.favoriteList[i][0].user.urls= this.artifacts
+
                 })
+                console.log("aa", this.favoriteList[i][0].user)
           }
         }
        if (p['props']['label'] == 'My Creation List'){
