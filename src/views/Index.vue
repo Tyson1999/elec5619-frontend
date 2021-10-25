@@ -94,7 +94,7 @@ export default {
         for (const artist of this.recommendArtists) {
           const artistBgDom = this.$refs['artistBg' + artist['username']]
           const artistAvatarDom = this.$refs['artistAvatar' + artist['username']]
-          artistBgDom.style.backgroundImage = `url("${process.env.VUE_APP_BASE_API + artist['store_location']}")`
+          artistBgDom.style.backgroundImage = `url("${this.checkIsImage(artist['store_location']) }")`
           artistAvatarDom.style.backgroundImage = `url("${process.env.VUE_APP_BASE_API + artist['profile_pic_store']}")`
         }
       })
