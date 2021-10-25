@@ -43,9 +43,7 @@
           <List :elements="subscribeList" :artifacts="artifacts" />
         </el-tab-pane>
         <!-- Creation List -->
-        <el-tab-pane label="My Creation List" class="creation"  v-if="isCreator">
-          <List :elements="creationList" :artifacts="artifacts" />
-        </el-tab-pane>
+        <el-tab-pane label="My Creation" class="creation"  v-if="isCreator" />
         <!-- Support level -->
         <el-tab-pane label="My Support Level" class="creation" v-if="isCreator">
           <SupportLevel />
@@ -105,7 +103,6 @@ export default {
         creationList:[],
         artifact: [],
         artifacts: [],
-        id:'',
         userId:{},
         loading: 3
       }
@@ -179,7 +176,7 @@ export default {
         this.$router.push('/newPost')
       }
       if (p['props']['label'] == 'Subscribe List') {
-        
+
         for (let i = 0; i < this.subscribeList.length; i++) {
           const userId = {id: this.subscribeList[i][0].user.id}
           getArtifactById(userId)
@@ -190,12 +187,8 @@ export default {
                     this.artifacts.push(urlPic)
                   }
                    this.subscribeList[i][0].user.urls= this.artifacts
-            
+
               })
-            //  console.log("aa", this.subscribeList[i][0].user)
-
-
-              
         }
       }
         if (p['props']['label'] == 'Favorite List') {
@@ -214,20 +207,8 @@ export default {
                 console.log("aa", this.favoriteList[i][0].user)
           }
         }
-       if (p['props']['label'] == 'My Creation List'){
-            this.artifacts = []
-            const userId = {id: this.creationList[0][0]['user']['id']}
-              getArtifactById(userId)
-                .then(res => {
-                  res = res['data']
-                  for (const item of res){
-                    const urlPic = {"url": item['store_location']}
-                    this.artifacts.push(urlPic)
-                  }
-                })
-                .catch(err => {
-                console.log(err)
-              })
+       if (p['props']['label'] == 'My Creation'){
+            this.$router.push('/artist/' + this.id)
        }
     }
   },

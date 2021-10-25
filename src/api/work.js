@@ -15,6 +15,21 @@ export function addPost(data) {
     })
 }
 
+export function delPost(workId) {
+    return request({
+        url: `api/works/del/${workId}`,
+        method: 'delete'
+    })
+}
+
+export function editPost(workId, data) {
+    return request({
+        url: `api/works/edit/${workId}`,
+        method: 'post',
+        data
+    })
+}
+
 export function getArtifactById(userId) {
     return request({
         url: '/api/getAllArtifactById',

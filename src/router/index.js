@@ -56,6 +56,11 @@ const routes = [
         component: () => import('@/views/NewPost.vue')
   },
   {
+      path: '/editPost/:postId',
+      name: 'editPost',
+      component: () => import('@/views/NewPost.vue')
+  },
+  {
         path:'/search',
         name: 'SearchCreator',
         component: SearchCreator

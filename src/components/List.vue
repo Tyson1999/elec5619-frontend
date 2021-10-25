@@ -20,11 +20,11 @@
             </div>
             <div class="column3">
               <div class="image-container">
-                <el-image 
-                    v-for="artifact in artist[0].user.urls" :key="artifact" 
+                <el-image
+                    v-for="artifact in artist[0].user.urls" :key="artifact"
                     :src= checkIsImage(artifact.url)
                     fit="cover">
-                
+
                 </el-image>
               </div>
             </div>
@@ -51,6 +51,9 @@ export default {
       type: Array,
       required: true
     },
+    component: {
+      type: String
+    }
   },
   data() {
     return {
@@ -65,12 +68,9 @@ export default {
   watch: {
     elements(){
       this.subList = this.elements
-      // console.log("1",this.subList[0][0].user.urls['url'])
-      console.log("2",this.subList[1][0].user)
     },
     artifacts() {
       this.picList = this.artifacts
-      
     }
   },
   methods: {
@@ -78,7 +78,6 @@ export default {
       this.$router.go(-1)
     },
     Edit(){
-      console.log("artid",this.artifacts)
       if(this.displayOption == true){
         this.displayOption=false;
         this.displayConfirm=false;
@@ -89,14 +88,16 @@ export default {
       }
     },
     Delete(artist){
-      console.log(artist)
-      console.log(artist[0])
-      unfollowCreator({"id":artist[0].user.id}).then(res => {
-        ElMessage.success(res['msg'])
-        setTimeout(() => {
-          this.$router.go(0)
-        }, 1000)
-      })
+      if (this.component === 'creation') {
+        console.log(artist)
+      } else {
+        unfollowCreator({"id":artist[0].user.id}).then(res => {
+          ElMessage.success(res['msg'])
+          setTimeout(() => {
+            this.$router.go(0)
+          }, 1000)
+        })
+      }
     },
     jump(item) {
       const user = item[0]['user']['id']

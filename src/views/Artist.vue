@@ -24,6 +24,21 @@
               <div class="post-meta">
                 <div class="post-date">{{post['category_name']}}</div>
                 <div class="post-privilege">{{support_type == 'General' ? 'Public to everyone' : 'Supporters can see'}}</div>
+                <div class="button-group" v-if="uid === creatorId['id']">
+                  <el-button size="mini" @click.stop="edit(post)" type="primary">Edit</el-button>
+                  <el-popconfirm
+                      confirm-button-text="OK"
+                      cancel-button-text="No, Thanks"
+                      icon="el-icon-info"
+                      icon-color="red"
+                      title="Are you sure to delete this?"
+                      @confirm="deletePost(post)"
+                  >
+                    <template #reference>
+                      <el-button size="mini" type="danger">Delete</el-button>
+                    </template>
+                  </el-popconfirm>
+                </div>
               </div>
               <div class="post-title">{{post['title']}}</div>
               <div class="post-desc" v-html="interceptOverflow(post['description'])"></div>
@@ -51,11 +66,13 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import {ElMessage} from 'element-plus'
 import Article from '@/components/Article'
-import {getArtifactById} from '@/api/work'
+import {getArtifactById, delPost} from '@/api/work'
 import {getCreatorInfo, followCreator, unfollowCreator} from '@/api/creator'
 import {getSubscribeList} from '@/api/user'
+
 export default {
   name: 'Artist',
   components: {Article},
@@ -196,7 +213,31 @@ export default {
     },
     join(level) {
       this.$router.push("/join/" + this.creatorId['id'] + '/' + level.title)
+    },
+    deletePost(post) {
+      delPost(post['artifact_id']).then(res => {
+        ElMessage.success(res['msg'])
+        setTimeout(() => {
+          this.$router.go(0)
+        }, 1500)
+      })
+    },
+    edit(post) {
+      this.$router.push({
+        name: "editPost",
+        params: {postId: post['artifact_id']},
+        query: {
+          title: post['title'],
+          category: post['category_name'],
+          description: post['description']
+        }
+      })
     }
+  },
+  computed: {
+    ...mapState({
+      uid: state => state.id,
+    })
   }
 }
 </script>
@@ -248,9 +289,16 @@ export default {
   margin-right: 25px;
 }
 
+.button-group {
+  position: absolute;
+  right: 10px;
+  bottom: 15px;
+}
+
 .post {
   background-color: #fff;
   margin-bottom: 30px;
+  position: relative;
 }
 
 .post .post-image {

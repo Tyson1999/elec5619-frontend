@@ -21,10 +21,12 @@
         :auto-upload="false"
         :on-exceed="handleExceed"
         :on-change="onUploadChange"
+        :disabled="isEdit"
     >
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">
-        Drop file here or <em>click to upload</em> your artifact here
+        <span v-if="isEdit" style="color: red">You can not edit file in this mode</span>
+        <span v-else>Drop file here or <em>click to upload</em> your artifact here</span>
         <br>
       </div>
     </el-upload>
@@ -37,15 +39,16 @@
         :config="config"
     />
     <div class="button-group">
-      <el-button type="primary" @click="submit">Submit</el-button>
+      <el-button type="primary" @click="submit">{{ this.isEdit ? "Update" : "Submit" }}</el-button>
     </div>
   </div>
 </template>
 
 <script>
 import VueTinymce from "@panhezeng/vue-tinymce";
-import {getCategories, addPost} from '@/api/work'
+import {getCategories, addPost, editPost} from '@/api/work'
 import {ElMessage} from 'element-plus'
+import {mapState} from 'vuex'
 
 export default {
   name: 'NewPost',
@@ -63,6 +66,28 @@ export default {
         this.options.push(obj)
       }
     })
+    this.postId = this.$route.params['postId']
+    // edit post
+    if (this.postId) {
+      const query = this.$route['query']
+      this.content = query['description']
+      this.title = query['title']
+      switch(query['category']){
+        case 'Art':
+          this.selectedOption = '0'
+          break;
+        case 'General':
+          this.selectedOption = '1'
+          break;
+        case 'Music':
+          this.selectedOption = '2'
+          break;
+        case 'Photo':
+          this.selectedOption = '3'
+          break
+      }
+      this.$router.replace(this.$route['path'])
+    }
   },
   data(){
     return {
@@ -77,7 +102,8 @@ export default {
       content: '',
       options: [],
       selectedOption: '',
-      file: ''
+      file: '',
+      postId: null
     }
   },
   methods: {
@@ -91,31 +117,59 @@ export default {
       ElMessage.error("You can upload 1 image file at max")
     },
     submit() {
-      const file = this.file.raw
-      const title = this.title
-      const description = this.content
-      const category_name = this.options.length > 0 ? this.options[this.selectedOption]['label'] : null
+      if (this.isEdit) {
+        const title = this.title
+        const description = this.content
+        const category_name = this.options.length > 0 ? this.options[this.selectedOption]['label'] : null
 
-      if (!file || !title || !description || !category_name){
-        ElMessage.error("Please make sure you fill in every field")
-      }
-      else {
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('title', title)
-        formData.append('description', description)
-        formData.append('category_name', category_name)
-        formData.append('weight', 0)
-        addPost(formData).then(res => {
+        const data = new FormData()
+        data.append('title', title)
+        data.append('description', description)
+        data.append('category_name', category_name)
+        data.append('weight', '0')
+        editPost(this.postId, data).then(res => {
           ElMessage.success(res['msg'])
           setTimeout(() => {
-            this.$router.push('/userProfile')
+            this.$router.push('/artist/' + this.uid)
           }, 1000)
-        }).then(err => {
+        }).catch(err => {
           ElMessage.error(err['msg'])
         })
+      } else {
+        const file = this.file.raw
+        const title = this.title
+        const description = this.content
+        const category_name = this.options.length > 0 ? this.options[this.selectedOption]['label'] : null
+
+        if (!file || !title || !description || !category_name){
+          ElMessage.error("Please make sure you fill in every field")
+        }
+        else {
+          const formData = new FormData()
+          formData.append('file', file)
+          formData.append('title', title)
+          formData.append('description', description)
+          formData.append('category_name', category_name)
+          formData.append('weight', '0')
+          addPost(formData).then(res => {
+            ElMessage.success(res['msg'])
+            setTimeout(() => {
+              this.$router.push('/userProfile')
+            }, 1000)
+          }).then(err => {
+            ElMessage.error(err['msg'])
+          })
+        }
       }
     }
+  },
+  computed: {
+    isEdit() {
+      return this.postId != null
+    },
+    ...mapState({
+      uid: state => state.id,
+    })
   }
 }
 </script>
