@@ -23,7 +23,7 @@
           </el-upload>
           <el-form ref="form" label-width="120px" class="autoFilled" style="margin-top: 10px">
             <el-form-item label="Username">
-              <el-input  placeholder="Username" v-model="username"></el-input>
+              <el-input  placeholder="Username" v-model="username" disabled></el-input>
             </el-form-item>
             <el-form-item label="Password">
               <el-input placeholder="Password" v-model="newPassword" show-password></el-input>
@@ -126,6 +126,9 @@ export default {
       changeNameAndPassword({username,password})
         .then(res => {
           ElMessage.success(res.msg)
+          setTimeout(() => {
+            this.$router.go(0)
+          }, 1000)
         })
         .catch(err => {
           console.log({err})
