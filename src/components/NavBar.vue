@@ -1,6 +1,8 @@
 <template>
   <div class="nav-container">
-    <div class="logo"></div>
+    <a href="/">
+      <div class="logo"></div>
+    </a>
     <div v-if="!isLogin">
       <div class="function" v-if="navBarType === 'login'">
         <div class="search">

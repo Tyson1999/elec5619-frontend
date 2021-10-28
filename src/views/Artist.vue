@@ -122,6 +122,9 @@ export default {
           } else {
             getSubscribeList().then(res => {
               res = res['data']
+              if (res == null){
+                res = []
+              }
               for (let item of res){
                 item = item[0]
                 const user = item['user']

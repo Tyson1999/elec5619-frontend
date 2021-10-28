@@ -6,7 +6,7 @@
       :artifact="artifact"
       direction="rtl"
   >
-    <div v-html="description"></div>
+    <div v-html="description" style="margin: 0 20px"></div>
     <el-button type="primary" style="margin-top: 20px;" @click="download">Download the artifact</el-button>
   </el-drawer>
 </template>

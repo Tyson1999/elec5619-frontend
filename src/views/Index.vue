@@ -166,6 +166,7 @@ export default {
   font-weight: bold;
   text-decoration: none;
   color: #000;
+  width: 200px;
 }
 
 .findArtist {
