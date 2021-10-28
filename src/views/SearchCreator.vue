@@ -7,7 +7,7 @@
       <p>Suggested Artists</p>
     </div>
 
-    <div class="block" v-for="artist in Top5Artists" :key="artist">
+    <div class="block" v-for="artist in Top5Artists" :key="artist" @click="jump(artist)">
           <el-col :span="16">
             <el-card shadow="hover" class="artList">
               <div class="row">
@@ -21,7 +21,7 @@
                 </div>
                 <div class="column3">
                   <el-carousel :interval="100000" type="card" height="200px">
-                    <el-carousel-item v-for="artifact in artifacts" :key="artifact">
+                    <el-carousel-item v-for="artifact in artist[0].user.urls" :key="artifact">
                       <el-image
                         style="width: 200px; height: 160px ;"
                         :src= checkIsImage(artifact.url)
@@ -80,8 +80,14 @@ export default {
         const userId = {id:this.creatorList[i][0].user.id}
         getArtifactById(userId)
           .then(res => {
-            const urlPic = {"url":res.data[0].store_location}
-            this.artifacts.push(urlPic)
+            // const urlPic = {"url":res.data[0].store_location}
+            // this.artifacts.push(urlPic)
+            this.artifacts = []
+            for (const item of res.data){
+              const urlPic = {"url": item['store_location']}
+              this.artifacts.push(urlPic)
+            }
+              this.creatorList[i][0].user.urls= this.artifacts
           })
           .catch(err => {
           console.log(err)
@@ -103,6 +109,11 @@ export default {
     Logout(){
       this.displayUser=false;
       console.log(1);
+    },
+
+    jump(item) {
+      const user = item[0]['user']['id']
+      this.$router.push(`/artist/${user}`)
     },
 
     selectImg(){
