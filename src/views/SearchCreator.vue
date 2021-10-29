@@ -16,7 +16,7 @@
                 </div>
                 <div class="column2">
                   <p>{{artist[0].user.username}} </p>
-                  <!-- <router-link :to="'/artist/'+artist[0].user.id">{{artist[0].user.username}} 
+                  <!-- <router-link :to="'/artist/'+artist[0].user.id">{{artist[0].user.username}}
                   </router-link> -->
                   <p>{{artist[0].user.description}}</p>
                 </div>
@@ -31,7 +31,7 @@
                     </el-carousel-item>
                   </el-carousel>
                 </div>
-              </div>        
+              </div>
             </el-card>
           </el-col>
       </div>
@@ -48,38 +48,28 @@ import {searchName} from '@/api/user'
 
 
 export default {
-  name:'UserProfile',
-  components: {
-  },
-
   data() {
-      return { 
-        numArtists: 2,
-        artifacts: [],
-        newArt:[],
-        creatorList:[],
-        id:'',
-        creator:''
+    return {
+      numArtists: 2,
+      artifacts: [],
+      newArt:[],
+      creatorList:[],
+      id:'',
+      creator:''
 
-      }
+    }
   },
-  beforeMount(){
+  created(){
     this.userInfo()
-    // this.searchName()
   },
   computed:{
     ...mapState({
       description: state => state.description,
       }),
     Top5Artists() {
-      return this.creatorList.slice(0, this.numArtists);  
+      return this.creatorList.slice(0, this.numArtists);
     },
-    
-  
   },
-
-  
-    
   methods: {
     userInfo() {
       this.creator = this.$route.query.name;
@@ -102,13 +92,9 @@ export default {
             .catch(err => {
               console.log(err)
             })
-        
-      }
-    })
-
-     
+          }
+        })
     },
-
     checkIsImage(url) {
       const fileExtension = url.substring(url.lastIndexOf('.') + 1);
       if (fileExtension === 'jpg' || fileExtension === 'png' || fileExtension == 'jpeg' || fileExtension == 'gif'){
@@ -117,28 +103,22 @@ export default {
         return require('@/assets/no_cover.jpeg')
       }
     },
-
-    Logout(){
-      this.displayUser=false;
-      console.log(1);
-    },
-
     jump(item) {
       const user = item[0]['user']['id']
       this.$router.push(`/artist/${user}`)
     },
-
     selectImg(){
       console.log(1);
-    }, 
+    },
   },
   watch: {
-    $route(){
-      // const name = to['query']['name']
-      this.userInfo()
+    $route(to){
+      if (to['path'] === '/search'){
+        this.userInfo()
+      }
     }
-  }, 
-    
+  },
+
 }
 </script>
 
@@ -158,7 +138,7 @@ export default {
 .bar p {
   text-align: center;
   vertical-align: middle;
-  line-height: 180px;  
+  line-height: 180px;
   font-size: 40px;
 }
 
@@ -199,7 +179,7 @@ img {
   float: left;
   width: 20%;
   padding: 10px;
-  height: 180px; 
+  height: 180px;
   overflow: scroll;
 }
 .column2 p {
@@ -209,7 +189,7 @@ img {
 .column2 h5 {
   float:left;
   color: lightskyblue;
-  
+
 }
 .row:after {
   content: "";
@@ -218,11 +198,11 @@ img {
 }
 
 .el-carousel__item:nth-child(2n) {
-background-color: white 
+background-color: white
 }
 
 .el-carousel__item:nth-child(2n+1) {
-  background-color: white 
+  background-color: white
 }
 
 

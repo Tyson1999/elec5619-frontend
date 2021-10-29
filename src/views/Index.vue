@@ -43,11 +43,11 @@
       </div>
     </div>
     <div class="FAQ">
-      <div class="question">What kind of service is pixivFANBOX?</div>
+      <div class="question">What kind of service is Patronus?</div>
       <div class="answer">
-        pixivFANBOX is a fan community made to support the creative activities of creators. More than just providing a place for followers to make regular donations, this is a place for creators to challenge themselves by keeping up their creative activities and producing new content.
+        Patronus is a fan community made to support the creative activities of creators. More than just providing a place for followers to make regular donations, this is a place for creators to challenge themselves by keeping up their creative activities and producing new content.
 
-        90% of each pledge goes directly to the creator, while the rest counts towards a settlement fee paid to an accounting company and a service fee paid to FANBOX for management and feature production.
+        90% of each pledge goes directly to the creator, while the rest counts towards a settlement fee paid to an accounting company and a service fee paid to Patronus for management and feature production.
 
         Also, creators can post FAN-exclusive content in a variety of forms, including blogs, illustrations, manga, photos, audio, videos, and more.</div>
     </div>

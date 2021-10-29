@@ -37,7 +37,6 @@
         </span>
         <span class="a">
           <el-button type="primary" @click="Search()" round>Search</el-button>
-          <!-- <span>{{creatorList}}</span> -->
         </span>
 
 
@@ -49,7 +48,6 @@
 <script>
 import Avatar from './Avatar'
 import { mapState } from 'vuex'
-import {searchName} from '@/api/user'
 
 export default {
   name: 'NavBar',
@@ -57,9 +55,6 @@ export default {
     Avatar
   },
   props: ['navBarType'],
-  
-  
-  
   data() {
     return {
       searchContent: '',
@@ -68,21 +63,16 @@ export default {
   },
   methods: {
     Search() {
-      const creator = this.searchContent
-      searchName(creator)
-        .then(res => {
-          this.creatorList = JSON.stringify(res.data)
-          // this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
-          this.$router.push({path: '/search', query: {name: this.searchContent}})
-          // this.$router.push(`/search?name=${this.searchContent}`)
-          // this.$router.go()
-
-          // console.log(this.creatorList)
-          })
-          .catch(err => {
-            console.log({err})
-          })
-
+      this.$router.push({path: '/search', query: {name: this.searchContent}})
+      // const creator = this.searchContent
+      // searchName(creator)
+      //   .then(res => {
+      //     this.creatorList = JSON.stringify(res.data)
+      //     // this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
+      //     })
+      //     .catch(err => {
+      //       console.log({err})
+      //     })
     },
   },
   computed: {
