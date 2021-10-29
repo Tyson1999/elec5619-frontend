@@ -57,6 +57,9 @@ export default {
     Avatar
   },
   props: ['navBarType'],
+  
+  
+  
   data() {
     return {
       searchContent: '',
@@ -69,7 +72,12 @@ export default {
       searchName(creator)
         .then(res => {
           this.creatorList = JSON.stringify(res.data)
-          this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
+          // this.$router.push({name: 'SearchCreator', params: {name: this.creatorList}})
+          this.$router.push({path: '/search', query: {name: this.searchContent}})
+          // this.$router.push(`/search?name=${this.searchContent}`)
+          // this.$router.go()
+
+          // console.log(this.creatorList)
           })
           .catch(err => {
             console.log({err})

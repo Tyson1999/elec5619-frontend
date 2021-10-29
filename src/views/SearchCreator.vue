@@ -15,8 +15,9 @@
                   <img :src= checkIsImage(artist[0].user.profilePicStore) style="width:80px">
                 </div>
                 <div class="column2">
-                  <router-link :to="'/artist/'+artist[0].user.id">{{artist[0].user.username}} 
-                  </router-link>
+                  <p>{{artist[0].user.username}} </p>
+                  <!-- <router-link :to="'/artist/'+artist[0].user.id">{{artist[0].user.username}} 
+                  </router-link> -->
                   <p>{{artist[0].user.description}}</p>
                 </div>
                 <div class="column3">
@@ -43,58 +44,69 @@
 <script>
 import { mapState } from 'vuex'
 import {getArtifactById} from '@/api/work'
+import {searchName} from '@/api/user'
+
 
 export default {
   name:'UserProfile',
   components: {
   },
+
   data() {
       return { 
         numArtists: 2,
         artifacts: [],
         newArt:[],
         creatorList:[],
-        id:''
+        id:'',
+        creator:''
 
       }
   },
   beforeMount(){
     this.userInfo()
+    // this.searchName()
   },
   computed:{
-    
-    Top5Artists: function() {
+    ...mapState({
+      description: state => state.description,
+      }),
+    Top5Artists() {
       return this.creatorList.slice(0, this.numArtists);  
     },
     
-    
+  
   },
+
+  
     
   methods: {
-    
-    
-
     userInfo() {
-      this.creatorList = JSON.parse(this.$route.params.name);
-      for (let i = 0;i < this.creatorList.length;i++){
-        const userId = {id:this.creatorList[i][0].user.id}
-        getArtifactById(userId)
-          .then(res => {
+      this.creator = this.$route.query.name;
+      searchName(this.creator)
+        .then(res => {
+          this.creatorList = res.data
+          for (let i = 0;i < this.creatorList.length;i++){
+            const userId = {id:this.creatorList[i][0].user.id}
+            getArtifactById(userId)
+              .then(res => {
             // const urlPic = {"url":res.data[0].store_location}
             // this.artifacts.push(urlPic)
-            this.artifacts = []
-            for (const item of res.data){
-              const urlPic = {"url": item['store_location']}
-              this.artifacts.push(urlPic)
-            }
-              this.creatorList[i][0].user.urls= this.artifacts
-          })
-          .catch(err => {
-          console.log(err)
-        })
+                this.artifacts = []
+                for (const item of res.data){
+                  const urlPic = {"url": item['store_location']}
+                  this.artifacts.push(urlPic)
+                }
+                this.creatorList[i][0].user.urls= this.artifacts
+            })
+            .catch(err => {
+              console.log(err)
+            })
         
       }
-      // console.log(this.artifacts)
+    })
+
+     
     },
 
     checkIsImage(url) {
@@ -118,17 +130,14 @@ export default {
 
     selectImg(){
       console.log(1);
-    },
-
-    computed: {
-      ...mapState({
-      description: state => state.description,
-      })
+    }, 
+  },
+  watch: {
+    $route(){
+      // const name = to['query']['name']
+      this.userInfo()
     }
-
-      
-
-  }
+  }, 
     
 }
 </script>
